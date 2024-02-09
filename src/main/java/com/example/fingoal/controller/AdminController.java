@@ -1,11 +1,11 @@
 package com.example.fingoal.controller;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/user")
+@RequestMapping("/api/v1/admin")
 @RequiredArgsConstructor
-public class UserController {
+public class AdminController {
 }

@@ -1,5 +1,6 @@
 package com.example.fingoal.config;
 
+import com.example.fingoal.model.Role;
 import com.example.fingoal.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -24,8 +25,6 @@ public class SecurityConfiguration {
 
     private final UserService userService;
 
-    private final AuthenticationProvider authenticationProvider;
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -47,12 +46,12 @@ public class SecurityConfiguration {
                         request ->
                                 request
                                         .requestMatchers("/api/v1/auth/**").permitAll()
-                                        .requestMatchers("/api/v1/admin").hasAuthority("ADMIN")
-                                        .requestMatchers("/api/v1/user").hasAuthority("ADMIN")
+                                        .requestMatchers("/api/v1/admin").hasAuthority(Role.ADMIN.name())
+                                        .requestMatchers("/api/v1/user").hasAuthority(Role.USER.name())
                                         .anyRequest().authenticated()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider)
+                .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
