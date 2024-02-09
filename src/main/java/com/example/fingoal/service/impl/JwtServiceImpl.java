@@ -1,6 +1,6 @@
 package com.example.fingoal.service.impl;
 
-import com.example.fingoal.service.JWTService;
+import com.example.fingoal.service.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class JWTServiceImpl implements JWTService {
+public class JwtServiceImpl implements JwtService {
     @Value("${application.security.jwt.secret-key}")
     private String secretKey;
     @Value("${application.security.jwt.expiration}")
@@ -34,6 +34,7 @@ public class JWTServiceImpl implements JWTService {
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
+
     @Override
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
@@ -57,7 +58,7 @@ public class JWTServiceImpl implements JWTService {
 
     private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, long expiration){
         return Jwts.builder()
-                .setClaims(extraClaims)
+//                .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
