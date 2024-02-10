@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -55,8 +54,8 @@ public class SecurityConfiguration {
                         request ->
                                 request
                                         .requestMatchers("/api/v1/auth/**").permitAll()
-                                        .requestMatchers("/api/v1/admin/**").hasAnyAuthority(Role.ADMIN.name())
-                                        .requestMatchers("/api/v1/user/**").hasAnyAuthority(Role.USER.name())
+                                        .requestMatchers("/api/v1/admin/**").hasAuthority(Role.ADMIN.name())
+                                        .requestMatchers("/api/v1/user/**").hasAuthority(Role.USER.name())
                                         .anyRequest()
                                         .authenticated()
                 )
