@@ -6,7 +6,7 @@ import com.example.fingoal.dto.RegisterRequestDto;
 import com.example.fingoal.model.User;
 
 public interface AuthenticationService {
-    User register(RegisterRequestDto registerRequestDto);
+    AuthenticationResponseDto register(RegisterRequestDto registerRequestDto);
 
     AuthenticationResponseDto authenticate(AuthenticationRequestDto request);
 

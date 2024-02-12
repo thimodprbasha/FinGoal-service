@@ -11,6 +11,7 @@ import com.example.fingoal.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public User register(RegisterRequestDto registerRequestDto){
+    public AuthenticationResponseDto register(RegisterRequestDto registerRequestDto){
         User user = User.builder()
                 .firstName(registerRequestDto.getFirstName())
                 .lastName(registerRequestDto.getLastName())
@@ -37,7 +38,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .role(Role.USER)
                 .profilePicture(registerRequestDto.getProfilePicture())
                 .build();
-        return userRepository.save(user);
+
+        userRepository.save(user);
+        return generateAuthenticationResponse(user);
 
     }
     @Override
@@ -47,14 +50,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         ));
 
         var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
-        var accessToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
-
-        AuthenticationResponseDto jwtAuthResponse = AuthenticationResponseDto.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
-        return jwtAuthResponse;
+        return generateAuthenticationResponse(user);
 
     }
 
@@ -75,4 +71,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return null;
     }
 
+    private AuthenticationResponseDto generateAuthenticationResponse(UserDetails user){
+        var accessToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+
+        return AuthenticationResponseDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
 }

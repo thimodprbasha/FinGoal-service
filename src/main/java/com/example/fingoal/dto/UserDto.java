@@ -1,7 +1,9 @@
 package com.example.fingoal.dto;
 
+import com.example.fingoal.model.Role;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -13,24 +15,19 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequestDto {
+public class UserDto {
+    private Long id;
 
-    @NotBlank(message = "First name cant be empty")
     private String firstName;
 
-    @NotBlank(message = "LastName cant be empty")
     private String lastName;
 
-    @NotBlank(message = "Email cant be empty")
-    @Email
     private String email;
 
     private String telephone;
 
-    @NotBlank(message = "Password cant be empty")
-    @Size(min = 4)
-    private String password;
-
     private String profilePicture;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }
