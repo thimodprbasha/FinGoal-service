@@ -49,6 +49,11 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToOne()
+    @JoinColumn(name = "user_budget_id", referencedColumnName = "id")
+    private UserBudget userBudget;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of( new SimpleGrantedAuthority(role.name()));
