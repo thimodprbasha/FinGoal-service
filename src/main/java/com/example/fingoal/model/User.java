@@ -50,9 +50,16 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToOne()
-    @JoinColumn(name = "user_budget_id", referencedColumnName = "id")
-    private UserBudget userBudget;
+    @OneToMany(mappedBy = "user")
+    private List<UserBudget> userBudget;
+
+    @OneToMany(mappedBy = "user")
+    private List<Account> accounts;
+
+    @OneToMany(mappedBy = "user")
+    private List<Merchant> merchants;
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

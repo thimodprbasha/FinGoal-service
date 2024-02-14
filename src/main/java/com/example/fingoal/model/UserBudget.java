@@ -5,6 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -18,13 +24,32 @@ public class UserBudget {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double incomeAmount;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
-    private double outcomeAmount;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
-    private double totalAmount;
+    private BigDecimal totalAmount;
 
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "userBudget")
+    private BigDecimal budgetAmount;
+
+    private BigDecimal incomeAmount;
+
+    private BigDecimal outcomeAmount;
+
+    private LocalDateTime endDate;
+
+    @OneToMany(mappedBy = "userBudget")
+    private List<IncomeTransaction> incomeTransactions;
+
+    @OneToMany(mappedBy = "userBudget")
+    private List<OutcomeTransaction> outcomeTransactions;
+
+    @OneToMany(mappedBy = "userBudget")
+    private List<Transfer> transfers;
+
+    @ManyToOne()
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
