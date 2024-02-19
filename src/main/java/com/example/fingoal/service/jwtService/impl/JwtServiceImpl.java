@@ -1,6 +1,6 @@
-package com.example.fingoal.service.impl;
+package com.example.fingoal.service.jwtService.impl;
 
-import com.example.fingoal.service.JwtService;
+import com.example.fingoal.service.jwtService.JwtService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

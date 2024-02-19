@@ -1,4 +1,4 @@
-package com.example.fingoal.service;
+package com.example.fingoal.service.jwtService;
 
 import io.jsonwebtoken.Claims;
 import org.springframework.security.core.userdetails.UserDetails;

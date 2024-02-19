@@ -3,7 +3,7 @@ package com.example.fingoal.controller;
 import com.example.fingoal.dto.AuthenticationRequestDto;
 import com.example.fingoal.dto.AuthenticationResponseDto;
 import com.example.fingoal.dto.RegisterRequestDto;
-import com.example.fingoal.service.AuthenticationService;
+import com.example.fingoal.service.authenticationService.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;

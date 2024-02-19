@@ -3,11 +3,11 @@ package com.example.fingoal;
 import com.example.fingoal.model.Role;
 import com.example.fingoal.model.User;
 import com.example.fingoal.repository.UserRepository;
-import com.example.fingoal.service.AuthenticationService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -21,11 +21,10 @@ public class FinGoalApplication {
 
     @Bean
     public CommandLineRunner commandLineRunner(
-            AuthenticationService authenticationService ,
             UserRepository userRepository,
             PasswordEncoder passwordEncoder) {
         return args -> {
-            Optional<User> isAdminPresent = userRepository.findByRole(Role.ADMIN);
+            Optional<User> isAdminPresent = userRepository.findByEmail("adminuser@admin.com");
             if (isAdminPresent.isEmpty()){
                 User admin = User.builder()
                         .firstName("admin")
@@ -38,6 +37,18 @@ public class FinGoalApplication {
                         .build();
                 userRepository.save(admin);
             }
+
+//            User testUser = User.builder()
+//                    .firstName("tom")
+//                    .lastName("cat")
+//                    .telephone("0712345678")
+//                    .email("user@user.com")
+//                    .password(passwordEncoder.encode("admin123"))
+//                    .role(Role.ADMIN)
+//                    .profilePicture("https://unsplash.com/photos/grayscale-photo-of-man-c_GmwfHBDzk?utm_content=creditShareLink&utm_medium=referral&utm_source=unsplash")
+//                    .build();
+
+
         };
     }
 

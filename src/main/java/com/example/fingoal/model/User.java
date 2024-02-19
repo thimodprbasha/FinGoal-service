@@ -1,5 +1,6 @@
 package com.example.fingoal.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -48,18 +49,26 @@ public class User implements UserDetails {
     private String profilePicture;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
-    @OneToMany(mappedBy = "user")
-    private List<UserBudget> userBudget;
+    @OneToOne(mappedBy = "user")
+    private UserBudget userBudget;
 
     @OneToMany(mappedBy = "user")
     private List<Account> accounts;
 
-    @OneToMany(mappedBy = "user")
-    private List<Merchant> merchants;
+//    @OneToMany(mappedBy = "user")
+//    private List<Transfer> transfers;
 
+//    @OneToMany(mappedBy = "user")
+//    private List<TransactionCategory> transactionCategories;
 
+//    @OneToMany(mappedBy = "userBudget")
+//    private List<IncomeTransaction> incomeTransactions;
+//
+//    @OneToMany(mappedBy = "userBudget")
+//    private List<OutcomeTransaction> outcomeTransactions;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -36,13 +36,16 @@ public class OutcomeTransaction{
 
     private String attachment;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "account_id" , referencedColumnName = "id")
     private Account account;
 
-    @OneToOne
-    private TransactionCategory transactionCategory;
+    @ManyToOne
+    @JoinColumn(name = "transaction_category_id" , referencedColumnName = "id")
+    private TransactionCategory category;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "merchant_id" , referencedColumnName = "id")
     private Merchant merchant;
 
     @ManyToOne

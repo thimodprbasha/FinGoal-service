@@ -1,4 +1,4 @@
-package com.example.fingoal.service.impl;
+package com.example.fingoal.service.authenticationService.Impl;
 
 import com.example.fingoal.dto.AuthenticationRequestDto;
 import com.example.fingoal.dto.RegisterRequestDto;
@@ -6,8 +6,8 @@ import com.example.fingoal.dto.AuthenticationResponseDto;
 import com.example.fingoal.model.Role;
 import com.example.fingoal.model.User;
 import com.example.fingoal.repository.UserRepository;
-import com.example.fingoal.service.AuthenticationService;
-import com.example.fingoal.service.JwtService;
+import com.example.fingoal.service.authenticationService.AuthenticationService;
+import com.example.fingoal.service.jwtService.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

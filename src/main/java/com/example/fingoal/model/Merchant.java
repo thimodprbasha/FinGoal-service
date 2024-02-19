@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -35,8 +36,22 @@ public class Merchant {
 
     private String location;
 
-    @ManyToOne()
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    @OneToMany(mappedBy = "merchant")
+    private List<OutcomeTransaction> outcomeTransactions;
+
+    @ManyToMany()
+    @JoinTable(
+            name = "merchant_promotions",
+            joinColumns = @JoinColumn(
+                    name = "merchant_id",
+                    referencedColumnName = "id"
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "promotion_id",
+                    referencedColumnName = "id"
+            )
+    )
+    private List<Promotions> promotions;
+
 
 }

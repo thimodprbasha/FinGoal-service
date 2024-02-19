@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,7 +31,13 @@ public class UserBudget {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    private String budgetName;
+
     private BigDecimal totalAmount;
+
+    private BigDecimal currentSavings;
+
+    private BigDecimal previousAmount;
 
     private BigDecimal budgetAmount;
 
@@ -38,7 +45,9 @@ public class UserBudget {
 
     private BigDecimal outcomeAmount;
 
-    private LocalDateTime endDate;
+    private LocalDate startDate;
+
+//    private LocalDateTime endDate;
 
     @OneToMany(mappedBy = "userBudget")
     private List<IncomeTransaction> incomeTransactions;
@@ -49,7 +58,10 @@ public class UserBudget {
     @OneToMany(mappedBy = "userBudget")
     private List<Transfer> transfers;
 
-    @ManyToOne()
+    @OneToMany(mappedBy = "userBudget")
+    private List<TransactionCategory> transactionCategories;
+
+    @OneToOne()
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 

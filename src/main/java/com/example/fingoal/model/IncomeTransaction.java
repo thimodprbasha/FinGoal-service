@@ -36,11 +36,13 @@ public class IncomeTransaction{
 
     private String attachment;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "account_id" , referencedColumnName = "id")
     private Account account;
 
-    @OneToOne
-    private TransactionCategory transactionCategory;
+    @ManyToOne
+    @JoinColumn(name = "transaction_category_id" , referencedColumnName = "id")
+    private TransactionCategory category;
 
     @ManyToOne
     @JoinColumn(name = "user_budget_id" , referencedColumnName = "id")

@@ -1,5 +1,6 @@
-package com.example.fingoal.service;
+package com.example.fingoal.service.userService;
 
+import com.example.fingoal.dto.UserDto;
 import com.example.fingoal.model.Role;
 import com.example.fingoal.model.User;
 import org.springframework.data.domain.Page;
@@ -9,6 +10,6 @@ import java.util.List;
 
 public interface AdminService {
 
-    Page<User> getAllUsersByRole(Role role , Pageable pageable);
+    Page<UserDto> getAllUsersByRole(Role role , Pageable pageable);
 
 }

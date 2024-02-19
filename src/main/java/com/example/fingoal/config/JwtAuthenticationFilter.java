@@ -1,7 +1,7 @@
 package com.example.fingoal.config;
 
-import com.example.fingoal.service.JwtService;
-import com.example.fingoal.service.UserService;
+import com.example.fingoal.service.jwtService.JwtService;
+import com.example.fingoal.service.userService.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

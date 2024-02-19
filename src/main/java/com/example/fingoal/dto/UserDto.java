@@ -10,7 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+//TODO add json property name later
+//TODO add validation
 @Data
 @Builder
 @AllArgsConstructor

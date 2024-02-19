@@ -1,4 +1,4 @@
-package com.example.fingoal.service;
+package com.example.fingoal.service.authenticationService;
 
 import com.example.fingoal.dto.AuthenticationRequestDto;
 import com.example.fingoal.dto.AuthenticationResponseDto;

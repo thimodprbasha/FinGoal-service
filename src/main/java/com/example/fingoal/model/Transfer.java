@@ -31,13 +31,16 @@ public class Transfer {
 
     private String attachment;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "from_account_id" , referencedColumnName = "id")
     private Account fromAccount;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "to_account_id" , referencedColumnName = "id")
     private Account toAccount;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "transaction_category_id" , referencedColumnName = "id")
     private TransactionCategory category;
 
     @ManyToOne

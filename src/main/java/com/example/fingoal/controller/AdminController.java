@@ -1,7 +1,7 @@
 package com.example.fingoal.controller;
 
 import com.example.fingoal.model.Role;
-import com.example.fingoal.service.AdminService;
+import com.example.fingoal.service.userService.AdminService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;

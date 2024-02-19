@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,9 +16,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "accounts")
-public class Account {
-
+@Table(name = "promotions")
+public class Promotions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,23 +28,15 @@ public class Account {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    private String accountName;
+    private String promotionName;
 
-    private String accountType;
+    private LocalDateTime startDate;
 
-    private String accountNumber;
+    private LocalDateTime endDate;
 
-    private BigDecimal balance;
+    @ManyToMany(
 
-    @OneToMany(mappedBy = "account")
-    private List<IncomeTransaction> incomeTransactions;
-
-    @OneToMany(mappedBy = "account")
-    private List<OutcomeTransaction> outcomeTransactions;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id" , referencedColumnName = "id")
-    private User user;
-
-
+            mappedBy = "promotions"
+    )
+    private List<Merchant> merchants;
 }
