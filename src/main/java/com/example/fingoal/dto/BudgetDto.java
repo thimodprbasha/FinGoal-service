@@ -1,6 +1,5 @@
 package com.example.fingoal.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +24,7 @@ public class BudgetDto {
 
     public String setAmount;
 
-    public List<CategoryDto> categories;
+    public List<TransactionCategoryDto> categories;
 
 
 }

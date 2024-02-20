@@ -29,6 +29,10 @@ public class UserDto {
 
     private String profilePicture;
 
+    private boolean isEnabled;
+
+    private Long userBudget;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 }

@@ -19,17 +19,15 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Page<UserDto> getAllUsersByRole(Role role , Pageable pageable) {
         return userRepository.findAllByRole(role , pageable).map(
-                user -> {
-                    return UserDto.builder()
-                            .id(user.getId())
-                            .firstName(user.getFirstName())
-                            .lastName(user.getLastName())
-                            .email(user.getEmail())
-                            .telephone(user.getTelephone())
-                            .profilePicture(user.getProfilePicture())
-                            .role(user.getRole())
-                            .build();
-                }
+                user -> UserDto.builder()
+                        .id(user.getId())
+                        .firstName(user.getFirstName())
+                        .lastName(user.getLastName())
+                        .email(user.getEmail())
+                        .telephone(user.getTelephone())
+                        .profilePicture(user.getProfilePicture())
+                        .role(user.getRole())
+                        .build()
         );
 
     }

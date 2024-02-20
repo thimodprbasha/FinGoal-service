@@ -24,21 +24,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> isUserExist(String email) {
-        var user = userRepository.findByEmail(email);
-        if (user.isEmpty()){
-            throw new UsernameNotFoundException("Not found");
-        }
-        return user;
+    public User isUserExist(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Not found"));
     }
 
     @Override
-    public Optional<User> isUserExist(Long id) {
-        var user = userRepository.findById(id);
-        if (user.isEmpty()){
-            throw new UsernameNotFoundException("Not found");
-        }
-        return user;
+    public User isUserExist(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Not found"));
+
     }
 
 }

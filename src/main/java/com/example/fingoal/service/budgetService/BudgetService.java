@@ -1,26 +1,19 @@
 package com.example.fingoal.service.budgetService;
 
 import com.example.fingoal.dto.BudgetDto;
-import com.example.fingoal.dto.CategoryDto;
+import com.example.fingoal.model.User;
 import com.example.fingoal.model.UserBudget;
 
-import java.util.List;
-import java.util.Optional;
-
 public interface BudgetService {
-    BudgetDto createBudget(BudgetDto budgetDto);
+    BudgetDto createBudget(BudgetDto budgetDto , User user);
 
-    void deleteBudget(Long budgetId);
+    BudgetDto updateUserBudget(BudgetDto budgetDto, User user);
 
-    Optional<UserBudget> userBudgetFindByUser(Long userId);
+    void deleteBudget(UserBudget userBudget);
 
-    Optional<UserBudget> userBudgetFindByBudget(Long budgetId);
+    void deleteBudget(Long userId);
 
-    CategoryDto createTransactionCategoryByUser(CategoryDto categoryDto, Long userId);
+    UserBudget userBudgetFindByUser(Long userId);
 
-    CategoryDto createTransactionCategoryByBudget(CategoryDto categoryDto, Long budgetId);
-
-    List<CategoryDto> createTransactionCategoryByUser(List<CategoryDto> transactionCategories, Long userId);
-
-    List<CategoryDto> createTransactionCategoryByBudget(List<CategoryDto> transactionCategories, Long budgetId);
+    UserBudget userBudgetFindByBudget(Long budgetId);
 }

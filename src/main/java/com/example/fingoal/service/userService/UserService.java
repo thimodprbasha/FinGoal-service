@@ -9,9 +9,9 @@ import java.util.Optional;
 public interface UserService {
     UserDetailsService userDetailsService();
 
-    Optional<User> isUserExist(String email);
+    User isUserExist(String email);
 
-    Optional<User> isUserExist(Long id);
+    User isUserExist(Long id);
 
 
 }
