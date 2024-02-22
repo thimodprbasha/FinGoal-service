@@ -1,5 +1,6 @@
 package com.example.fingoal.dto;
 
+import com.example.fingoal.model.Account;
 import com.example.fingoal.model.Role;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -10,6 +11,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
 //TODO add json property name later
 //TODO add validation
 @Data
@@ -17,7 +22,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDto {
+
     private Long id;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 
     private String firstName;
 
@@ -31,8 +41,10 @@ public class UserDto {
 
     private boolean isEnabled;
 
-    private Long userBudget;
+    private Long userBudgetId;
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    private List<AccountDto> accounts;
 }

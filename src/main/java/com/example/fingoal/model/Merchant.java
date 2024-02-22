@@ -1,5 +1,6 @@
 package com.example.fingoal.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -36,10 +37,19 @@ public class Merchant {
 
     private String location;
 
-    @OneToMany(mappedBy = "merchant")
+    @JsonIgnore
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
+            mappedBy = "merchant"
+    )
     private List<OutcomeTransaction> outcomeTransactions;
 
-    @ManyToMany()
+    @JsonIgnore
+    @ManyToMany(
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL
+    )
     @JoinTable(
             name = "merchant_promotions",
             joinColumns = @JoinColumn(

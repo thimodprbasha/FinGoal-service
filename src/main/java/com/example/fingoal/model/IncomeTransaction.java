@@ -36,15 +36,15 @@ public class IncomeTransaction{
 
     private String attachment;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id" , referencedColumnName = "id")
     private Account account;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_category_id" , referencedColumnName = "id")
     private TransactionCategory category;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_budget_id" , referencedColumnName = "id")
     private UserBudget userBudget;
 

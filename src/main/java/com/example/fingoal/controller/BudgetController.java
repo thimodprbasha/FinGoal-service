@@ -1,7 +1,6 @@
 package com.example.fingoal.controller;
 
-import com.example.fingoal.dto.BudgetDto;
-import com.example.fingoal.mappers.impl.BudgetMapper;
+import com.example.fingoal.dto.UserBudgetDto;
 import com.example.fingoal.service.budgetService.BudgetService;
 import com.example.fingoal.service.userService.UserService;
 import jakarta.validation.Valid;
@@ -19,18 +18,16 @@ public class BudgetController {
 
     private final BudgetService budgetService;
 
-    private final BudgetMapper budgetMapper;
-
     @PostMapping("/create/{user-id}")
     public ResponseEntity<?> createBudget(
             @Valid
             @PathVariable(name = "user-id") long id ,
-            @RequestBody BudgetDto budget
+            @RequestBody UserBudgetDto budget
     ) {
         budget.setUserId(id);
         var user = userService.isUserExist(id);
         var resp = budgetService.createBudget(budget , user);
-        return new ResponseEntity(resp , HttpStatus.CREATED);
+        return new ResponseEntity<>(resp , HttpStatus.CREATED);
     }
 
     @GetMapping("/get/{user-id}")
@@ -38,18 +35,18 @@ public class BudgetController {
             @Valid
             @PathVariable(name = "user-id") long id
     ) {
-        var resp = budgetService.userBudgetFindByUser(id);
-        return new ResponseEntity(budgetMapper.mapTo(resp) , HttpStatus.OK);
+        var resp = budgetService.findUserBudgetByUserMapToDto(id);
+        return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 
     @PutMapping("/update/{user-id}")
     public ResponseEntity<?> updateBudget(
             @Valid
             @PathVariable(name = "user-id") long id,
-            @RequestBody BudgetDto budgetDto
+            @RequestBody UserBudgetDto userBudgetDto
     ) {
         var user = userService.isUserExist(id);
-        var updatedBudget = budgetService.updateUserBudget(budgetDto , user);
+        var updatedBudget = budgetService.updateUserBudget(userBudgetDto, user);
         return ResponseEntity.ok().body("ok");
     }
 

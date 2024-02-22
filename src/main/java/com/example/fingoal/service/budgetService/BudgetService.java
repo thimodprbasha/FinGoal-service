@@ -1,19 +1,23 @@
 package com.example.fingoal.service.budgetService;
 
-import com.example.fingoal.dto.BudgetDto;
+import com.example.fingoal.dto.UserBudgetDto;
 import com.example.fingoal.model.User;
 import com.example.fingoal.model.UserBudget;
 
 public interface BudgetService {
-    BudgetDto createBudget(BudgetDto budgetDto , User user);
+    UserBudgetDto createBudget(UserBudgetDto userBudgetDto, User user);
 
-    BudgetDto updateUserBudget(BudgetDto budgetDto, User user);
+    UserBudgetDto updateUserBudget(UserBudgetDto userBudgetDto, User user);
 
     void deleteBudget(UserBudget userBudget);
 
     void deleteBudget(Long userId);
 
-    UserBudget userBudgetFindByUser(Long userId);
+    UserBudget findUserBudgetByUser(Long userId);
 
-    UserBudget userBudgetFindByBudget(Long budgetId);
+    UserBudget findUserBudgetByBudget(Long budgetId);
+
+    UserBudgetDto findUserBudgetByUserMapToDto(Long userId);
+
+    UserBudgetDto findUserBudgetByBudgetMapToDto(Long budgetId);
 }

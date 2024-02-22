@@ -1,16 +1,16 @@
 package com.example.fingoal.service.budgetService.impl;
 
 import com.example.fingoal.dto.AccountDto;
-import com.example.fingoal.mappers.Mapper;
 import com.example.fingoal.mappers.impl.AccountMapper;
 import com.example.fingoal.model.Account;
 import com.example.fingoal.model.User;
 import com.example.fingoal.repository.AccountRepository;
 import com.example.fingoal.service.budgetService.AccountService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
@@ -21,8 +21,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountDto createAccount(AccountDto accountDto, User user) {
-        Account account = accountRepository.save(mapper.mapFrom(accountDto));
-        return mapper.mapTo(account);
+        Account account = mapper.mapFrom(accountDto);
+        Account saved = accountRepository.save(account);
+        return mapper.mapTo(saved);
     }
 
     @Override
@@ -31,22 +32,46 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<AccountDto> getAllAccounts(User user) {
-        return null;
+    public Page<AccountDto> getAllAccountsByUser(Long userId , Pageable pageable) {
+        return accountRepository.findAllByUserId(userId , pageable).map(
+                account -> mapper.mapTo(account)
+        );
+    }
+
+
+    @Override
+    public Account accountFindByUser(Long userId) {
+        return accountRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException());
     }
 
     @Override
-    public Account accountFindByUser(Long id) {
-        return null;
+    public Account accountFindById(Long accountID) {
+        return accountRepository.findById(accountID).orElseThrow(() -> new RuntimeException());
     }
 
     @Override
-    public void deleteAccount(AccountDto account) {
+    public AccountDto accountFindByIdMapToDto(Long accountID) {
+        return mapper.mapTo(this.accountFindById(accountID));
+    }
+
+    @Override
+    public AccountDto accountFindByUserMapToDto(Long userId) {
+        return mapper.mapTo(this.accountFindByUser(userId));
+    }
+
+    @Override
+    public AccountDto accountFindByNumber(String accountNumber) {
+        return mapper.mapTo(accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new RuntimeException()));
+    }
+
+    @Override
+    public void deleteAccount(Account account) {
+        this.accountRepository.delete(account);
 
     }
 
     @Override
-    public void deleteAccount(Long id) {
-
+    public void deleteAccount(Long accountId) {
+        this.accountRepository.deleteById(accountId);
     }
 }

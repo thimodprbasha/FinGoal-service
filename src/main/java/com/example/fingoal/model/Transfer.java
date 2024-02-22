@@ -31,19 +31,19 @@ public class Transfer {
 
     private String attachment;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_account_id" , referencedColumnName = "id")
     private Account fromAccount;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "to_account_id" , referencedColumnName = "id")
     private Account toAccount;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_category_id" , referencedColumnName = "id")
     private TransactionCategory category;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_budget_id" , referencedColumnName = "id")
     private UserBudget userBudget;
 

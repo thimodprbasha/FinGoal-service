@@ -29,9 +29,9 @@ public class TransactionCategoryServiceImpl implements TransactionCategoryServic
                 .setAmount(transactionCategoryDto.getSetAmount())
                 .icon(transactionCategoryDto.getIcon())
                 .build();
-        var id =  transactionCategoryRepository.save(transactionCategory);
 
-        return transactionCategoryDto;
+        TransactionCategory saved =  transactionCategoryRepository.save(transactionCategory);
+        return mapper.mapTo(saved);
     }
     @Override
     public List<TransactionCategoryDto> createTransactionCategory(List<TransactionCategoryDto> transactionCategories , UserBudget userBudget){
@@ -45,21 +45,18 @@ public class TransactionCategoryServiceImpl implements TransactionCategoryServic
                                         .build())
                 .collect(Collectors.toList());
 
-        transactionCategoryRepository.saveAll(transactionCategoryList);
-
-        return transactionCategories;
+        List<TransactionCategory> savedAll = transactionCategoryRepository.saveAll(transactionCategoryList);
+        return savedAll.stream().map(mapper::mapTo).collect(Collectors.toList());
     }
 
     @Override
     public Page<TransactionCategoryDto> findAllCategoryByBudget(Long budgetId , Pageable pageable) {
-        return transactionCategoryRepository.findAllByUserBudgetId(budgetId , pageable).map(
-                transactionCategory -> mapper.mapTo(transactionCategory)
-        );
+        return transactionCategoryRepository.findAllByUserBudgetId(budgetId , pageable).map(mapper::mapTo);
     }
 
     @Override
     public TransactionCategory findByCategoryName(String categoryName) {
-        return transactionCategoryRepository.findByCategoryName(categoryName).orElseThrow(() -> new RuntimeException());
+        return transactionCategoryRepository.findByCategoryName(categoryName).orElseThrow(RuntimeException::new);
     }
 
     @Override
@@ -74,7 +71,7 @@ public class TransactionCategoryServiceImpl implements TransactionCategoryServic
 
     @Override
     public TransactionCategory findByCategoryId(Long categoryId) {
-        return transactionCategoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException());
+        return transactionCategoryRepository.findById(categoryId).orElseThrow(RuntimeException::new);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.example.fingoal.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,8 +35,10 @@ public class Promotions {
 
     private LocalDateTime endDate;
 
+    @JsonIgnore
     @ManyToMany(
-
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
             mappedBy = "promotions"
     )
     private List<Merchant> merchants;

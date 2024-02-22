@@ -11,7 +11,8 @@ import java.util.Optional;
 @Repository
 public interface TransactionCategoryRepository extends JpaRepository<TransactionCategory , Long> {
 
-    Page<TransactionCategory> findAllByUserBudgetId(Long id , Pageable pageable);
+    Page<TransactionCategory> findAllByUserBudgetId(Long budgetId , Pageable pageable);
 
+//    Page<TransactionCategory> findAllByIncomeTransactions
     Optional<TransactionCategory> findByCategoryName(String categoryName);
 }

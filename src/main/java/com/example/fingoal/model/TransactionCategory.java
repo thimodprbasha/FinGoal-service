@@ -1,5 +1,6 @@
 package com.example.fingoal.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,16 +38,31 @@ public class TransactionCategory {
 
     private BigDecimal currentAmount;
 
-    @OneToMany(mappedBy = "category")
+    @JsonIgnore
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
+            mappedBy = "category"
+            )
     private List<IncomeTransaction> incomeTransactions;
 
-    @OneToMany(mappedBy = "category")
+    @JsonIgnore
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
+            mappedBy = "category"
+    )
     private List<OutcomeTransaction> outcomeTransactions;
 
-    @OneToMany(mappedBy = "category")
+    @JsonIgnore
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
+            mappedBy = "category"
+    )
     private List<Transfer> transfers;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_budget_id" , referencedColumnName = "id")
     private UserBudget userBudget;
 }

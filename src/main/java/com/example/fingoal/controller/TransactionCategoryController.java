@@ -30,22 +30,22 @@ public class TransactionCategoryController {
             @PathVariable(name = "user-id") long id ,
             @RequestBody TransactionCategoryDto transactionCategoryDto
     ) {
-        var budget = budgetService.userBudgetFindByUser(id);
+        var budget = budgetService.findUserBudgetByUser(id);
         var resp = transactionCategoryService.createTransactionCategory(transactionCategoryDto, budget);
         return new ResponseEntity(resp , HttpStatus.CREATED);
     }
 
     @GetMapping("/get-all/{user-id}")
-    public ResponseEntity<?> getAllCategories(
+    public ResponseEntity<Page<TransactionCategoryDto>> getAllCategories(
             @Valid
             @PathVariable(name = "user-id") long id,
             @RequestParam(name = "pageNo" , defaultValue = "0") Integer pageNo,
             @RequestParam(name = "pageSize" , defaultValue = "10") Integer pageSize
     ) {
         Pageable pageable =  PageRequest.of(pageNo ,pageSize);
-        var budget = budgetService.userBudgetFindByUser(id);
-        Page<TransactionCategoryDto> transactionCategoryDtos = transactionCategoryService.findAllCategoryByBudget(budget.getId(), pageable);
-        return new ResponseEntity<>(transactionCategoryDtos , HttpStatus.OK);
+        var budget = budgetService.findUserBudgetByUser(id);
+        Page<TransactionCategoryDto> transactionCategories = transactionCategoryService.findAllCategoryByBudget(budget.getId(), pageable);
+        return new ResponseEntity<>(transactionCategories , HttpStatus.OK);
     }
 
     @GetMapping("/get-by")
@@ -62,18 +62,18 @@ public class TransactionCategoryController {
         return ResponseEntity.badRequest().body("Invalid");
     }
 
-    @PutMapping("/create/{category-id}")
+    @PatchMapping("/create/{category-id}")
     public ResponseEntity<?> updateCategory(
             @Valid
             @PathVariable(name = "category-id") long id ,
             @RequestBody TransactionCategoryDto transactionCategoryDto
     ) {
-        var budget = budgetService.userBudgetFindByUser(id);
+        var budget = budgetService.findUserBudgetByUser(id);
         var resp = transactionCategoryService.updateCategory(transactionCategoryDto, budget);
         return new ResponseEntity<>(resp , HttpStatus.CREATED);
     }
 
-    @GetMapping("/delete/{category-id}")
+    @DeleteMapping("/delete/{category-id}")
     public ResponseEntity<?> deleteCategory(
             @Valid
             @PathVariable(name = "category-id") long categoryId

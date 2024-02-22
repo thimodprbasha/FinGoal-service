@@ -1,5 +1,6 @@
 package com.example.fingoal.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,21 +48,39 @@ public class UserBudget {
 
     private LocalDate startDate;
 
-//    private LocalDateTime endDate;
-
-    @OneToMany(mappedBy = "userBudget")
+    @JsonIgnore
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
+            mappedBy = "userBudget"
+    )
     private List<IncomeTransaction> incomeTransactions;
 
-    @OneToMany(mappedBy = "userBudget")
+    @JsonIgnore
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
+            mappedBy = "userBudget"
+    )
     private List<OutcomeTransaction> outcomeTransactions;
 
-    @OneToMany(mappedBy = "userBudget")
+    @JsonIgnore
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
+            mappedBy = "userBudget"
+    )
     private List<Transfer> transfers;
 
-    @OneToMany(mappedBy = "userBudget")
+    @JsonIgnore
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
+            mappedBy = "userBudget"
+    )
     private List<TransactionCategory> transactionCategories;
 
-    @OneToOne()
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 

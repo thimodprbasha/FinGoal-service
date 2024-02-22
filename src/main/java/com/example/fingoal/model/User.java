@@ -1,8 +1,10 @@
 package com.example.fingoal.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -52,23 +54,18 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private Role role;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(
+            cascade = CascadeType.ALL,
+            mappedBy = "user"
+    )
     private UserBudget userBudget;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
+            mappedBy = "user"
+    )
     private List<Account> accounts;
-
-//    @OneToMany(mappedBy = "user")
-//    private List<Transfer> transfers;
-
-//    @OneToMany(mappedBy = "user")
-//    private List<TransactionCategory> transactionCategories;
-
-//    @OneToMany(mappedBy = "userBudget")
-//    private List<IncomeTransaction> incomeTransactions;
-//
-//    @OneToMany(mappedBy = "userBudget")
-//    private List<OutcomeTransaction> outcomeTransactions;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
