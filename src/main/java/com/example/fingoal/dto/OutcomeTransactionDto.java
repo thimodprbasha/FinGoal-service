@@ -1,14 +1,13 @@
 package com.example.fingoal.dto;
 
 import com.example.fingoal.model.Merchant;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,7 +18,7 @@ public class OutcomeTransactionDto {
 
     private LocalDateTime updatedAt;
 
-    private LocalDateTime transactionDate;
+    private LocalDate transactionDate;
 
     private BigDecimal amount;
 

@@ -1,10 +1,7 @@
 package com.example.fingoal.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,7 +12,8 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -55,6 +53,7 @@ public class User implements UserDetails {
     private Role role;
 
     @OneToOne(
+            fetch = FetchType.EAGER,
             cascade = CascadeType.ALL,
             mappedBy = "user"
     )

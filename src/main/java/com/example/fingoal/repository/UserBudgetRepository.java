@@ -14,5 +14,7 @@ import java.util.Optional;
 public interface UserBudgetRepository extends JpaRepository<UserBudget , Long> {
     Optional<UserBudget> findByUserId(Long userId);
 
+//    Optional<UserBudget> update
+
 //    Page<IncomeTransaction> getAllByIncomeTransactions(Pageable pageable);
 }

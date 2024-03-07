@@ -46,4 +46,15 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler  {
 
     }
 
+    @ExceptionHandler({RuntimeException.class})
+    public ResponseEntity<Object> RuntimeException(RuntimeException exception , WebRequest webRequest){
+        Map<String, Object> responseBody = new LinkedHashMap<>();
+        responseBody.put("timestamp", new Date());
+        responseBody.put("status", 403);
+        responseBody.put("errors", "Invalid Username or UserID");
+
+        return new ResponseEntity<>(responseBody, HttpStatus.FORBIDDEN);
+
+    }
+
 }

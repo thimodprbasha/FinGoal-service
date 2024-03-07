@@ -22,6 +22,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountDto createAccount(AccountDto accountDto, User user) {
         Account account = mapper.mapFrom(accountDto);
+        account.setUser(user);
         Account saved = accountRepository.save(account);
         return mapper.mapTo(saved);
     }
@@ -33,35 +34,32 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Page<AccountDto> getAllAccountsByUser(Long userId , Pageable pageable) {
-        return accountRepository.findAllByUserId(userId , pageable).map(
-                account -> mapper.mapTo(account)
-        );
-    }
-
-
-    @Override
-    public Account accountFindByUser(Long userId) {
-        return accountRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException());
+        return accountRepository.findAllByUserId(userId , pageable).map(mapper::mapTo);
     }
 
     @Override
-    public Account accountFindById(Long accountID) {
-        return accountRepository.findById(accountID).orElseThrow(() -> new RuntimeException());
+    public Account findAccountByUser(Long userId) {
+        return accountRepository.findByUserId(userId).orElseThrow(RuntimeException::new);
     }
 
     @Override
-    public AccountDto accountFindByIdMapToDto(Long accountID) {
-        return mapper.mapTo(this.accountFindById(accountID));
+    public Account findAccountById(Long accountID) {
+        return accountRepository.findById(accountID).orElseThrow(RuntimeException::new);
     }
 
     @Override
-    public AccountDto accountFindByUserMapToDto(Long userId) {
-        return mapper.mapTo(this.accountFindByUser(userId));
+    public AccountDto findAccountByIdMapToDto(Long accountID) {
+        return mapper.mapTo(this.findAccountById(accountID));
     }
 
     @Override
-    public AccountDto accountFindByNumber(String accountNumber) {
-        return mapper.mapTo(accountRepository.findByAccountNumber(accountNumber).orElseThrow(() -> new RuntimeException()));
+    public AccountDto findAccountByUserMapToDto(Long userId) {
+        return mapper.mapTo(this.findAccountByUser(userId));
+    }
+
+    @Override
+    public AccountDto findAccountByNumber(String accountNumber) {
+        return mapper.mapTo(accountRepository.findByAccountNumber(accountNumber).orElseThrow(RuntimeException::new));
     }
 
     @Override

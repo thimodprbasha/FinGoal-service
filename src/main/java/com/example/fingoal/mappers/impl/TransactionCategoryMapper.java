@@ -15,6 +15,9 @@ public class TransactionCategoryMapper implements Mapper<TransactionCategory , T
 
     @Override
     public TransactionCategoryDto mapTo(TransactionCategory transactionCategory) {
+        this.mapper
+                .typeMap(TransactionCategory.class , TransactionCategoryDto.class)
+                .addMapping(mapper -> mapper.getUserBudget().getId() , TransactionCategoryDto::setUserBudgetId);
         return mapper.map(transactionCategory , TransactionCategoryDto.class) ;
     }
 

@@ -10,9 +10,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class TransactionCategoryServiceImpl implements TransactionCategoryService {
@@ -22,46 +26,43 @@ public class TransactionCategoryServiceImpl implements TransactionCategoryServic
     private final TransactionCategoryMapper mapper;
 
     @Override
-    public TransactionCategoryDto createTransactionCategory(TransactionCategoryDto transactionCategoryDto, UserBudget userBudget){
-        TransactionCategory transactionCategory = TransactionCategory.builder()
-                .userBudget(userBudget)
-                .categoryName(transactionCategoryDto.getCategoryName())
-                .setAmount(transactionCategoryDto.getSetAmount())
-                .icon(transactionCategoryDto.getIcon())
-                .build();
+    @Transactional
+    public TransactionCategoryDto createTransactionCategory(TransactionCategoryDto transactionCategoryDto, UserBudget userBudget) {
+        if (!userBudget.isCategoryFull()) {
 
-        TransactionCategory saved =  transactionCategoryRepository.save(transactionCategory);
-        return mapper.mapTo(saved);
-    }
-    @Override
-    public List<TransactionCategoryDto> createTransactionCategory(List<TransactionCategoryDto> transactionCategories , UserBudget userBudget){
-        List<TransactionCategory> transactionCategoryList =  transactionCategories.stream().map(
-                        categoryDto ->
-                                TransactionCategory.builder()
-                                        .userBudget(userBudget)
-                                        .categoryName(categoryDto.getCategoryName())
-                                        .setAmount(categoryDto.getSetAmount())
-                                        .icon(categoryDto.getIcon())
-                                        .build())
-                .collect(Collectors.toList());
+            BigDecimal incrementedCategoryAmount = userBudget.getCategoryTotalAmount().add(transactionCategoryDto.getSetAmount());
+            int compareCategoryAmount = userBudget.getBudgetAmount().compareTo(incrementedCategoryAmount);
 
-        List<TransactionCategory> savedAll = transactionCategoryRepository.saveAll(transactionCategoryList);
-        return savedAll.stream().map(mapper::mapTo).collect(Collectors.toList());
+            if (compareCategoryAmount == 0) {
+                userBudget.setCategoryFull(true);
+            } else if (compareCategoryAmount < 0) {
+                throw new RuntimeException();
+            }
+
+            TransactionCategory transactionCategory = mapper.mapFrom(transactionCategoryDto);
+            userBudget.setCategoryTotalAmount(incrementedCategoryAmount);
+            transactionCategory.setUserBudget(userBudget);
+
+            TransactionCategory saved = transactionCategoryRepository.save(transactionCategory);
+            return mapper.mapTo(saved);
+        } else
+            throw new RuntimeException();
     }
 
+
     @Override
-    public Page<TransactionCategoryDto> findAllCategoryByBudget(Long budgetId , Pageable pageable) {
-        return transactionCategoryRepository.findAllByUserBudgetId(budgetId , pageable).map(mapper::mapTo);
+    public Page<TransactionCategoryDto> findAllCategoryByBudget(Long budgetId, Pageable pageable) {
+        return transactionCategoryRepository.findAllByUserBudgetId(budgetId, pageable).map(mapper::mapTo);
     }
 
     @Override
-    public TransactionCategory findByCategoryName(String categoryName) {
-        return transactionCategoryRepository.findByCategoryName(categoryName).orElseThrow(RuntimeException::new);
+    public TransactionCategory findByCategoryName(Long budgetId, String categoryName) {
+        return transactionCategoryRepository.findByUserBudgetIdAndCategoryName(budgetId, categoryName).orElseThrow(RuntimeException::new);
     }
 
     @Override
-    public TransactionCategoryDto findByCategoryNameMapToDto(String categoryName) {
-        return mapper.mapTo(this.findByCategoryName(categoryName));
+    public TransactionCategoryDto findByCategoryNameMapToDto(Long budgetId, String categoryName) {
+        return mapper.mapTo(this.findByCategoryName(budgetId, categoryName));
     }
 
     @Override
@@ -75,6 +76,7 @@ public class TransactionCategoryServiceImpl implements TransactionCategoryServic
     }
 
     @Override
+    @Transactional
     public TransactionCategory updateCategory(TransactionCategoryDto transactionCategoryDto, UserBudget userBudget) {
         return null;
     }

@@ -1,19 +1,21 @@
 package com.example.fingoal.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.example.fingoal.model.UserBudget;
+import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 //TODO add json property name later
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserBudgetDto {
+
+    private Long id;
 //    @JsonProperty("user_id")
     public Long userId;
 //    @JsonProperty("user_id")
@@ -25,14 +27,24 @@ public class UserBudgetDto {
 
     public LocalDate startDate;
 
-    public String accountId;
+    private BigDecimal budgetAmount;
 
-    public String setAmount;
+    private BigDecimal currentAmount;
 
-    public List<TransactionCategoryDto> categories;
+    private BigDecimal currentSavings;
+
+    private BigDecimal incomeAmount;
+
+    private BigDecimal outcomeAmount;
+
+    private BigDecimal categoryTotalAmount;
+
+    private boolean isCategoryFull;
+
+    public List<TransactionCategoryDto> transactionCategories;
 //
-//    public List<IncomeTransactionDto>  incomeTransactions;
+    public List<IncomeTransactionDto>  incomeTransactions;
 //
-//    public List<IncomeTransactionDto>  outcomeTransactions;
+    public List<OutcomeTransactionDto>  outcomeTransactions;
 
 }

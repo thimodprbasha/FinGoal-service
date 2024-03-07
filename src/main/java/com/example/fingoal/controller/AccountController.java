@@ -66,9 +66,9 @@ public class AccountController {
     ) {
 
         if (accountId.isPresent()) {
-            return new ResponseEntity<>(accountService.accountFindById(accountId.get()), HttpStatus.OK);
+            return new ResponseEntity<>(accountService.findAccountByIdMapToDto(accountId.get()), HttpStatus.OK);
         } else if (StringUtils.isNotEmpty(accountNumber)) {
-            return new ResponseEntity<>(accountService.accountFindByNumber(accountNumber), HttpStatus.OK);
+            return new ResponseEntity<>(accountService.findAccountByNumber(accountNumber), HttpStatus.OK);
         }
         return ResponseEntity.badRequest().body("Invalid");
     }

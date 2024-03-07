@@ -1,21 +1,21 @@
 package com.example.fingoal.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 //TODO add json property name later
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransactionCategoryDto {
 
     private Long id;
+
+    private Long userBudgetId;
 
     private LocalDateTime createdAt;
 
@@ -27,6 +27,7 @@ public class TransactionCategoryDto {
 
     private BigDecimal setAmount;
 
-    private Long budgetId;
+    private BigDecimal currentAmount;
+
 
 }

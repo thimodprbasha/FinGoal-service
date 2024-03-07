@@ -3,6 +3,7 @@ package com.example.fingoal.service.budgetService.impl;
 import com.example.fingoal.dto.OutcomeTransactionDto;
 import com.example.fingoal.mappers.impl.OutcomeMapper;
 import com.example.fingoal.model.OutcomeTransaction;
+import com.example.fingoal.model.UserBudget;
 import com.example.fingoal.repository.OutcomeTransactionRepository;
 import com.example.fingoal.service.budgetService.TransactionService;
 import lombok.RequiredArgsConstructor;
@@ -19,25 +20,21 @@ public class OutcomeTransactionServiceImpl implements TransactionService<Outcome
     private final OutcomeMapper mapper;
 
     @Override
-    public OutcomeTransactionDto createTransaction(OutcomeTransactionDto outcomeTransactionDto) {
+    public OutcomeTransactionDto createTransaction(OutcomeTransactionDto outcomeTransactionDto , UserBudget userBudget) {
         OutcomeTransaction outcomeTransaction = mapper.mapFrom(outcomeTransactionDto);
         OutcomeTransaction saved = outcomeTransactionRepository.save(outcomeTransaction);
         return mapper.mapTo(saved);
     }
 
-    @Override
-    public OutcomeTransactionDto updateTransaction(OutcomeTransactionDto dto) {
-        return null;
-    }
 
     @Override
-    public OutcomeTransaction transactionFindById(Long outcomeTransactionId) {
+    public OutcomeTransaction findTransactionById(Long outcomeTransactionId) {
         return outcomeTransactionRepository.findById(outcomeTransactionId).orElseThrow(RuntimeException::new);
     }
 
     @Override
-    public OutcomeTransactionDto transactionFindByIdMapToDto(Long outcomeTransactionId) {
-        return mapper.mapTo(this.transactionFindById(outcomeTransactionId));
+    public OutcomeTransactionDto findTransactionByIdMapToDto(Long outcomeTransactionId) {
+        return mapper.mapTo(this.findTransactionById(outcomeTransactionId));
     }
 
     @Override
@@ -60,13 +57,4 @@ public class OutcomeTransactionServiceImpl implements TransactionService<Outcome
         return outcomeTransactionRepository.findAllByUserBudgetId(budgetId , pageable).map(mapper::mapTo);
     }
 
-    @Override
-    public void deleteTransaction(OutcomeTransaction outcomeTransaction) {
-        outcomeTransactionRepository.delete(outcomeTransaction);
-    }
-
-    @Override
-    public void deleteTransaction(Long outcomeTransactionId) {
-        outcomeTransactionRepository.deleteById(outcomeTransactionId);
-    }
 }

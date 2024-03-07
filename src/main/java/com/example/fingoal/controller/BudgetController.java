@@ -24,7 +24,7 @@ public class BudgetController {
             @PathVariable(name = "user-id") long id ,
             @RequestBody UserBudgetDto budget
     ) {
-        budget.setUserId(id);
+//        budget.setUserId(id);
         var user = userService.isUserExist(id);
         var resp = budgetService.createBudget(budget , user);
         return new ResponseEntity<>(resp , HttpStatus.CREATED);

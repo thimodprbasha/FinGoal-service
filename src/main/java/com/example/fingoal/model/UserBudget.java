@@ -2,10 +2,7 @@ package com.example.fingoal.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,7 +11,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,11 +32,9 @@ public class UserBudget {
 
     private String budgetName;
 
-    private BigDecimal totalAmount;
+    private BigDecimal currentAmount;
 
     private BigDecimal currentSavings;
-
-    private BigDecimal previousAmount;
 
     private BigDecimal budgetAmount;
 
@@ -46,12 +42,16 @@ public class UserBudget {
 
     private BigDecimal outcomeAmount;
 
+    private BigDecimal categoryTotalAmount;
+
+    private boolean isCategoryFull;
+
     private LocalDate startDate;
 
     @JsonIgnore
     @OneToMany(
             cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             mappedBy = "userBudget"
     )
     private List<IncomeTransaction> incomeTransactions;
@@ -59,7 +59,7 @@ public class UserBudget {
     @JsonIgnore
     @OneToMany(
             cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             mappedBy = "userBudget"
     )
     private List<OutcomeTransaction> outcomeTransactions;
@@ -67,7 +67,7 @@ public class UserBudget {
     @JsonIgnore
     @OneToMany(
             cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             mappedBy = "userBudget"
     )
     private List<Transfer> transfers;
@@ -75,12 +75,12 @@ public class UserBudget {
     @JsonIgnore
     @OneToMany(
             cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             mappedBy = "userBudget"
     )
     private List<TransactionCategory> transactionCategories;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL , fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 

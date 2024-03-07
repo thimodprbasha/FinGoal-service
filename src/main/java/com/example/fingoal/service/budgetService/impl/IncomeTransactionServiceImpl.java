@@ -2,15 +2,20 @@ package com.example.fingoal.service.budgetService.impl;
 
 import com.example.fingoal.dto.IncomeTransactionDto;
 import com.example.fingoal.mappers.impl.IncomeMapper;
+import com.example.fingoal.model.Account;
 import com.example.fingoal.model.IncomeTransaction;
+import com.example.fingoal.model.TransactionCategory;
+import com.example.fingoal.model.UserBudget;
 import com.example.fingoal.repository.IncomeTransactionRepository;
 import com.example.fingoal.service.budgetService.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -21,25 +26,42 @@ public class IncomeTransactionServiceImpl implements TransactionService<IncomeTr
     private final IncomeMapper mapper;
 
     @Override
-    public IncomeTransactionDto createTransaction(IncomeTransactionDto transactionDto) {
+    @Transactional
+    public IncomeTransactionDto createTransaction(IncomeTransactionDto transactionDto , UserBudget userBudget) {
+
+        TransactionCategory transactionCategory = userBudget.getTransactionCategories().stream()
+                .filter(element -> element.getId().equals(transactionDto.getCategoryId())).findAny().orElseThrow(RuntimeException::new);
+
+        Account account = userBudget.getUser().getAccounts().stream()
+                .filter(element -> element.getId().equals(transactionDto.getAccountId())).findAny().orElseThrow(RuntimeException::new);
+
+        BigDecimal incrementedAccountBalance = account.getBalance().add(transactionDto.getAmount());
+        BigDecimal incrementedUserBudgetIncome = userBudget.getIncomeAmount().add(transactionDto.getAmount());
+
+        account.setBalance(incrementedAccountBalance);
+        userBudget.setIncomeAmount(incrementedUserBudgetIncome);
+
         IncomeTransaction incomeTransaction = mapper.mapFrom(transactionDto);
+        incomeTransaction.setCategory(transactionCategory);
+        incomeTransaction.setAccount(account);
+        incomeTransaction.setUserBudget(userBudget);
+
         IncomeTransaction saved = incomeTransactionRepository.save(incomeTransaction);
         return mapper.mapTo(saved);
     }
 
-    @Override
-    public IncomeTransactionDto updateTransaction(IncomeTransactionDto transactionDto) {
-        return null;
-    }
+//    private <S> S FindEntity(Stream<S> stream , Class<TransactionCategory> transactionCategoryClass){
+//    }
+
 
     @Override
-    public IncomeTransaction transactionFindById(Long incomeTransactionId) {
+    public IncomeTransaction findTransactionById(Long incomeTransactionId) {
         return incomeTransactionRepository.findById(incomeTransactionId).orElseThrow(RuntimeException::new);
     }
 
     @Override
-    public IncomeTransactionDto transactionFindByIdMapToDto(Long incomeTransactionId) {
-        return mapper.mapTo(this.transactionFindById(incomeTransactionId));
+    public IncomeTransactionDto findTransactionByIdMapToDto(Long incomeTransactionId) {
+        return mapper.mapTo(this.findTransactionById(incomeTransactionId));
     }
 
     @Override
@@ -57,13 +79,4 @@ public class IncomeTransactionServiceImpl implements TransactionService<IncomeTr
         return incomeTransactionRepository.findAllByUserBudgetId(budgetId , pageable).map(mapper::mapTo);
     }
 
-    @Override
-    public void deleteTransaction(IncomeTransaction incomeTransaction) {
-        incomeTransactionRepository.delete(incomeTransaction);
-    }
-
-    @Override
-    public void deleteTransaction(Long id) {
-        incomeTransactionRepository.deleteById(id);
-    }
 }

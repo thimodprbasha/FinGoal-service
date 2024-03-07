@@ -11,13 +11,11 @@ import java.util.List;
 public interface TransactionCategoryService {
     TransactionCategoryDto createTransactionCategory(TransactionCategoryDto transactionCategoryDto, UserBudget userBudget);
 
-    List<TransactionCategoryDto> createTransactionCategory(List<TransactionCategoryDto> transactionCategories, UserBudget userBudget);
-
     Page<TransactionCategoryDto> findAllCategoryByBudget(Long budgetId , Pageable pageable);
 
-    TransactionCategory findByCategoryName(String categoryName);
+    TransactionCategory findByCategoryName(Long budgetId , String categoryName);
 
-    TransactionCategoryDto findByCategoryNameMapToDto(String categoryName);
+    TransactionCategoryDto findByCategoryNameMapToDto(Long budgetId , String categoryName);
 
     TransactionCategoryDto findByCategoryIdMapToDto(Long categoryId);
 

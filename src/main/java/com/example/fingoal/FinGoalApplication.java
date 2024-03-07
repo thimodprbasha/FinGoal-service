@@ -38,17 +38,6 @@ public class FinGoalApplication {
                 userRepository.save(admin);
             }
 
-//            User testUser = User.builder()
-//                    .firstName("tom")
-//                    .lastName("cat")
-//                    .telephone("0712345678")
-//                    .email("user@user.com")
-//                    .password(passwordEncoder.encode("admin123"))
-//                    .role(Role.ADMIN)
-//                    .profilePicture("https://unsplash.com/photos/grayscale-photo-of-man-c_GmwfHBDzk?utm_content=creditShareLink&utm_medium=referral&utm_source=unsplash")
-//                    .build();
-
-
         };
     }
 

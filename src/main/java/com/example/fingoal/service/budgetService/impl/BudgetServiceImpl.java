@@ -1,7 +1,11 @@
 package com.example.fingoal.service.budgetService.impl;
 
 import com.example.fingoal.dto.UserBudgetDto;
+import com.example.fingoal.mappers.Mapper;
 import com.example.fingoal.mappers.impl.BudgetMapper;
+import com.example.fingoal.mappers.impl.IncomeMapper;
+import com.example.fingoal.mappers.impl.OutcomeMapper;
+import com.example.fingoal.mappers.impl.TransactionCategoryMapper;
 import com.example.fingoal.model.User;
 import com.example.fingoal.model.UserBudget;
 import com.example.fingoal.repository.UserBudgetRepository;
@@ -10,8 +14,8 @@ import com.example.fingoal.service.budgetService.TransactionCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,32 +23,24 @@ public class BudgetServiceImpl implements BudgetService {
 
     private final UserBudgetRepository userBudgetRepository;
 
-    private final TransactionCategoryService transactionCategoryService;
-
     private final BudgetMapper mapper;
+
+//    private final TransactionCategoryMapper transactionCategoryMapper;
+//
+//    private final IncomeMapper incomeMapper;
+//
+//    private final OutcomeMapper outcomeMapper;
+
+
+
 
     @Override
     public UserBudgetDto createBudget(UserBudgetDto userBudgetDto, User user) {
-//        var user = userService.isUserExist(budgetDto.userId);
-        UserBudget userBudget = UserBudget.builder()
-                .user(user)
-                .budgetName(userBudgetDto.getBudgetName())
-                .budgetAmount(new BigDecimal(200000))
-                .totalAmount(new BigDecimal(0))
-                .currentSavings(new BigDecimal(0))
-                .previousAmount(new BigDecimal(0))
-                .incomeAmount(new BigDecimal(0))
-                .outcomeAmount(new BigDecimal(0))
-                .startDate(LocalDate.now())
-                .build();
-
-        var budget = userBudgetRepository.save(userBudget);
-
-        if (!userBudgetDto.categories.isEmpty()){
-            transactionCategoryService.createTransactionCategory(userBudgetDto.categories , budget);
-        }
-
-        return userBudgetDto;
+        UserBudget userBudget = mapper.mapFrom(userBudgetDto);
+        userBudget.setUser(user);
+        Optional.ofNullable(userBudget.getTransactionCategories()).ifPresent(list -> list.forEach(transactionCategory -> transactionCategory.setUserBudget(userBudget)));
+        UserBudget saved = userBudgetRepository.save(userBudget);
+        return mapper.mapTo(saved);
     }
     @Override
     public UserBudgetDto updateUserBudget(UserBudgetDto userBudgetDto, User user){
@@ -68,7 +64,7 @@ public class BudgetServiceImpl implements BudgetService {
 
     @Override
     public UserBudget findUserBudgetByUser(Long userId){
-        return userBudgetRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException());
+        return userBudgetRepository.findByUserId(userId).orElseThrow(RuntimeException::new);
 
     }
 
@@ -84,7 +80,27 @@ public class BudgetServiceImpl implements BudgetService {
 
     @Override
     public UserBudget findUserBudgetByBudget(Long budgetId){
-        return userBudgetRepository.findById(budgetId).orElseThrow(() -> new RuntimeException());
+        return userBudgetRepository.findById(budgetId).orElseThrow(RuntimeException::new);
 
     }
+
+//    private UserBudgetDto deepMapper(UserBudget userBudget){
+//        UserBudgetDto userBudgetDto = mapper.mapTo(userBudget);
+//
+//        Optional.ofNullable(userBudget.getIncomeTransactions())
+//                .ifPresent(element -> userBudgetDto.setIncomeTransactions(Convertor(element ,incomeMapper)));
+//        Optional.ofNullable(userBudget.getOutcomeTransactions())
+//                .ifPresent(element -> userBudgetDto.setOutcomeTransactions(Convertor(element ,outcomeMapper)));
+//        Optional.ofNullable(userBudget.getTransactionCategories())
+//                .ifPresent(element -> userBudgetDto.setTransactionCategories(Convertor(element ,transactionCategoryMapper)));
+//
+//        return  userBudgetDto;
+//
+//
+//    }
+
+//    private <E , D> List<D> Convertor(List<E> list , Mapper<E, D> mapper){
+//        return list.stream().map(mapper::mapTo).toList();
+//
+//    }
 }

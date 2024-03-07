@@ -1,16 +1,15 @@
 package com.example.fingoal.service.budgetService;
 
+import com.example.fingoal.model.UserBudget;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-public interface TransactionService<T , D> {
-    D createTransaction(D dto);
+public interface TransactionService<S , D> {
+    D createTransaction(D dto , UserBudget userBudget);
 
-    D updateTransaction(D dto);
+    S findTransactionById(Long id);
 
-    T transactionFindById(Long id);
-
-    D transactionFindByIdMapToDto(Long id);
+    D findTransactionByIdMapToDto(Long id);
 
     Page<D> getAllTransactionByCategory(Long categoryId , Pageable pageable);
 
@@ -22,8 +21,5 @@ public interface TransactionService<T , D> {
 
     Page<D> getAllTransactionByBudget(Long budgetId , Pageable pageable);
 
-    void deleteTransaction(T t);
-
-    void deleteTransaction(Long id);
 
 }

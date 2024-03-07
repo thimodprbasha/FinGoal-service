@@ -14,5 +14,5 @@ public interface TransactionCategoryRepository extends JpaRepository<Transaction
     Page<TransactionCategory> findAllByUserBudgetId(Long budgetId , Pageable pageable);
 
 //    Page<TransactionCategory> findAllByIncomeTransactions
-    Optional<TransactionCategory> findByCategoryName(String categoryName);
+    Optional<TransactionCategory> findByUserBudgetIdAndCategoryName(Long budgetId ,String categoryName);
 }

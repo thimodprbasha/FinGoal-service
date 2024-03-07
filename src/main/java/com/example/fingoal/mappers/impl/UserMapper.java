@@ -16,6 +16,10 @@ public class UserMapper implements Mapper<User , UserDto> {
 
     @Override
     public UserDto mapTo(User user) {
+        this.modelMapper
+                .typeMap(User.class , UserDto.class)
+                .addMapping(mapper -> mapper.getUserBudget().getId() , UserDto::setUserBudgetId);
+
         return modelMapper.map(user , UserDto.class);
     }
 

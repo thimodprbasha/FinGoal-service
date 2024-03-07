@@ -1,6 +1,8 @@
 package com.example.fingoal.controller;
 
 import com.example.fingoal.dto.TransactionCategoryDto;
+import com.example.fingoal.dto.UserBudgetDto;
+import com.example.fingoal.model.UserBudget;
 import com.example.fingoal.service.budgetService.BudgetService;
 import com.example.fingoal.service.budgetService.TransactionCategoryService;
 import io.micrometer.common.util.StringUtils;
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -30,10 +33,11 @@ public class TransactionCategoryController {
             @PathVariable(name = "user-id") long id ,
             @RequestBody TransactionCategoryDto transactionCategoryDto
     ) {
-        var budget = budgetService.findUserBudgetByUser(id);
-        var resp = transactionCategoryService.createTransactionCategory(transactionCategoryDto, budget);
-        return new ResponseEntity(resp , HttpStatus.CREATED);
+        UserBudget budget = budgetService.findUserBudgetByUser(id);
+        TransactionCategoryDto resp = transactionCategoryService.createTransactionCategory(transactionCategoryDto, budget);
+        return new ResponseEntity<>(resp , HttpStatus.CREATED);
     }
+
 
     @GetMapping("/get-all/{user-id}")
     public ResponseEntity<Page<TransactionCategoryDto>> getAllCategories(
@@ -52,12 +56,14 @@ public class TransactionCategoryController {
     public ResponseEntity<?> getCategory(
             @Valid
             @RequestParam(name = "category-id" , required = false) Optional<Long> categoryId,
+            @RequestParam(name = "user-id" , required = false) Optional<Long> userId,
             @RequestParam(name = "category" , required = false) String categoryName
     ) {
         if (categoryId.isPresent() ){
             return new ResponseEntity<>(transactionCategoryService.findByCategoryIdMapToDto(categoryId.get()) , HttpStatus.OK);
-        } else if (StringUtils.isNotEmpty(categoryName)) {
-            return new ResponseEntity<>(transactionCategoryService.findByCategoryNameMapToDto(categoryName) , HttpStatus.OK);
+        } else if (userId.isPresent() && StringUtils.isNotEmpty(categoryName) ) {
+            var budget = budgetService.findUserBudgetByUser(userId.get());
+            return new ResponseEntity<>(transactionCategoryService.findByCategoryNameMapToDto(budget.getId() , categoryName) , HttpStatus.OK);
         }
         return ResponseEntity.badRequest().body("Invalid");
     }

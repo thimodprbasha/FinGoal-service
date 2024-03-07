@@ -1,7 +1,9 @@
 package com.example.fingoal.mappers.impl;
 
+import com.example.fingoal.dto.IncomeTransactionDto;
 import com.example.fingoal.dto.OutcomeTransactionDto;
 import com.example.fingoal.mappers.Mapper;
+import com.example.fingoal.model.IncomeTransaction;
 import com.example.fingoal.model.OutcomeTransaction;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -15,6 +17,9 @@ public class OutcomeMapper implements Mapper<OutcomeTransaction , OutcomeTransac
 
     @Override
     public OutcomeTransactionDto mapTo(OutcomeTransaction outcomeTransaction) {
+        this.mapper
+                .typeMap(OutcomeTransaction.class , OutcomeTransactionDto.class)
+                .addMapping(mapper -> mapper.getUserBudget().getId() , OutcomeTransactionDto::setUserBudgetId);
         return mapper.map(outcomeTransaction , OutcomeTransactionDto.class);
     }
 

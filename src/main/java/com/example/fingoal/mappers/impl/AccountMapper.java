@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import javax.xml.transform.Source;
+
 @Component
 @RequiredArgsConstructor
 public class AccountMapper implements Mapper<Account , AccountDto> {
@@ -15,7 +17,11 @@ public class AccountMapper implements Mapper<Account , AccountDto> {
 
     @Override
     public AccountDto mapTo(Account account) {
-       return modelMapper.map(account , AccountDto.class);
+        this.modelMapper
+                .typeMap(Account.class , AccountDto.class)
+                .addMapping(mapper -> mapper.getUser().getId() , AccountDto::setUserId);
+
+        return modelMapper.map(account , AccountDto.class);
     }
 
     @Override
