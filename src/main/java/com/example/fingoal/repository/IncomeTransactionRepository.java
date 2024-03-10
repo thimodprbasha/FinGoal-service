@@ -8,9 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IncomeTransactionRepository extends JpaRepository<IncomeTransaction , Long> {
-
-    Page<IncomeTransaction> findAllByCategoryId(Long categoryId , Pageable pageable);
-
     Page<IncomeTransaction> findAllByAccountId(Long accountId , Pageable pageable);
 
     Page<IncomeTransaction> findAllByUserBudgetId(Long budgetId , Pageable pageable);

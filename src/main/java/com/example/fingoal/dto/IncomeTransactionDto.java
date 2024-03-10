@@ -16,8 +16,4 @@ import lombok.extern.jackson.Jacksonized;
 public class IncomeTransactionDto extends TransactionDto {
 
     private Long accountId;
-
-    private Long categoryId;
-
-    private Long userBudgetId;
 }

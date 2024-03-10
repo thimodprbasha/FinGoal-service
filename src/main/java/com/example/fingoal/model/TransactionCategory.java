@@ -41,24 +41,8 @@ public class TransactionCategory {
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
             mappedBy = "category"
-            )
-    private List<IncomeTransaction> incomeTransactions;
-
-    @JsonIgnore
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "category"
     )
     private List<OutcomeTransaction> outcomeTransactions;
-
-    @JsonIgnore
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "category"
-    )
-    private List<Transfer> transfers;
 
 
     @ManyToOne(fetch = FetchType.LAZY)

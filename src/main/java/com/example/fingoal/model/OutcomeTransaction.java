@@ -3,11 +3,6 @@ package com.example.fingoal.model;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -30,8 +25,4 @@ public class OutcomeTransaction extends Transaction{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "merchant_id" , referencedColumnName = "id")
     private Merchant merchant;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_budget_id" , referencedColumnName = "id")
-    private UserBudget userBudget;
 }

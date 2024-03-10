@@ -1,7 +1,8 @@
 package com.example.fingoal.service.budgetService.impl;
 
 import com.example.fingoal.dto.IncomeTransactionDto;
-import com.example.fingoal.dto.TransactionType;
+import com.example.fingoal.model.TransactionType;
+import com.example.fingoal.exception.ResourceNotFoundException;
 import com.example.fingoal.mappers.impl.IncomeMapper;
 import com.example.fingoal.model.*;
 import com.example.fingoal.repository.IncomeTransactionRepository;
@@ -10,13 +11,12 @@ import com.example.fingoal.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +30,6 @@ public class IncomeTransactionServiceImpl implements TransactionService<IncomeTr
     @Transactional
     public IncomeTransactionDto createTransaction(IncomeTransactionDto transactionDto , UserBudget userBudget , Merchant merchant) {
 
-        TransactionCategory transactionCategory = Utils.GetTransactionCategoryFromBudgetEntity(userBudget.getTransactionCategories().stream() , transactionDto.getCategoryId());
         Account account = Utils.GetAccountFromBudgetEntity( userBudget.getUser().getAccounts().stream() , transactionDto.getAccountId());
 
         BigDecimal incrementedAccountBalance = account.getBalance().add(transactionDto.getAmount());
@@ -40,7 +39,6 @@ public class IncomeTransactionServiceImpl implements TransactionService<IncomeTr
         userBudget.setIncomeAmount(incrementedUserBudgetIncome);
 
         IncomeTransaction incomeTransaction = mapper.mapFrom(transactionDto);
-        incomeTransaction.setCategory(transactionCategory);
         incomeTransaction.setAccount(account);
         incomeTransaction.setUserBudget(userBudget);
         incomeTransaction.setTransactionType(TransactionType.INCOME_TRANSACTION);
@@ -52,17 +50,18 @@ public class IncomeTransactionServiceImpl implements TransactionService<IncomeTr
 
     @Override
     public IncomeTransaction findTransactionById(Long incomeTransactionId) {
-        return incomeTransactionRepository.findById(incomeTransactionId).orElseThrow(RuntimeException::new);
+        return incomeTransactionRepository
+                .findById(incomeTransactionId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                String.format("Could not find a IncomeTransaction with ID : %d" , incomeTransactionId )
+                                , HttpStatus.NOT_FOUND)
+                );
     }
 
     @Override
     public IncomeTransactionDto findTransactionByIdMapToDto(Long incomeTransactionId) {
         return mapper.mapTo(this.findTransactionById(incomeTransactionId));
-    }
-
-    @Override
-    public Page<IncomeTransactionDto> getAllTransactionByCategory(Long categoryId, Pageable pageable) {
-        return incomeTransactionRepository.findAllByCategoryId(categoryId , pageable).map(mapper::mapTo);
     }
 
     @Override

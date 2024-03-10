@@ -1,6 +1,7 @@
 package com.example.fingoal.service.merchantService.impl;
 
 import com.example.fingoal.dto.MerchantDto;
+import com.example.fingoal.exception.ResourceNotFoundException;
 import com.example.fingoal.mappers.impl.MerchantMapper;
 import com.example.fingoal.model.Merchant;
 import com.example.fingoal.repository.MerchantRepository;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
@@ -35,7 +37,14 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public Merchant findMerchantById(Long merchantId) {
-        return merchantRepository.findById(merchantId).orElseThrow(RuntimeException::new);
+        return merchantRepository
+                .findById(merchantId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                String.format("Could not find a Merchant with ID : \"%d\"" , merchantId )
+                                , HttpStatus.NOT_FOUND
+                        )
+                );
     }
 
     @Override

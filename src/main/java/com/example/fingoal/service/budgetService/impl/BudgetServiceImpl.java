@@ -2,6 +2,7 @@ package com.example.fingoal.service.budgetService.impl;
 
 import com.example.fingoal.dto.TransactionDto;
 import com.example.fingoal.dto.UserBudgetDto;
+import com.example.fingoal.exception.ResourceNotFoundException;
 import com.example.fingoal.mappers.Mapper;
 import com.example.fingoal.mappers.impl.BudgetMapper;
 import com.example.fingoal.mappers.impl.IncomeMapper;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,10 +32,8 @@ public class BudgetServiceImpl implements BudgetService {
 
     private final BudgetMapper mapper;
 
-//    private final TransactionCategoryMapper transactionCategoryMapper;
-//
     private final IncomeMapper incomeMapper;
-//
+
     private final OutcomeMapper outcomeMapper;
 
 
@@ -68,7 +68,13 @@ public class BudgetServiceImpl implements BudgetService {
 
     @Override
     public UserBudget findUserBudgetByUser(Long userId){
-        return userBudgetRepository.findByUserId(userId).orElseThrow(RuntimeException::new);
+        return userBudgetRepository
+                .findByUserId(userId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                String.format("Could not find a Budget with ID : %d" , userId )
+                                , HttpStatus.NOT_FOUND)
+                );
 
     }
 
@@ -100,24 +106,4 @@ public class BudgetServiceImpl implements BudgetService {
         return userBudgetRepository.findById(budgetId).orElseThrow(RuntimeException::new);
 
     }
-
-//    private UserBudgetDto deepMapper(UserBudget userBudget){
-//        UserBudgetDto userBudgetDto = mapper.mapTo(userBudget);
-//
-//        Optional.ofNullable(userBudget.getIncomeTransactions())
-//                .ifPresent(element -> userBudgetDto.setIncomeTransactions(Convertor(element ,incomeMapper)));
-//        Optional.ofNullable(userBudget.getOutcomeTransactions())
-//                .ifPresent(element -> userBudgetDto.setOutcomeTransactions(Convertor(element ,outcomeMapper)));
-//        Optional.ofNullable(userBudget.getTransactionCategories())
-//                .ifPresent(element -> userBudgetDto.setTransactionCategories(Convertor(element ,transactionCategoryMapper)));
-//
-//        return  userBudgetDto;
-//
-//
-//    }
-
-//    private <E , D> List<D> Convertor(List<E> list , Mapper<E, D> mapper){
-//        return list.stream().map(mapper::mapTo).toList();
-//
-//    }
 }

@@ -19,7 +19,11 @@ public class OutcomeMapper implements Mapper<OutcomeTransaction , OutcomeTransac
     public OutcomeTransactionDto mapTo(OutcomeTransaction outcomeTransaction) {
         this.mapper
                 .typeMap(OutcomeTransaction.class , OutcomeTransactionDto.class)
-                .addMapping(mapper -> mapper.getUserBudget().getId() , OutcomeTransactionDto::setUserBudgetId);
+                .addMapping(mapper -> mapper.getUserBudget().getId() , OutcomeTransactionDto::setUserBudgetId)
+                .addMapping(mapper -> mapper.getAccount().getId(), OutcomeTransactionDto::setAccountId)
+                .addMapping(mapper -> mapper.getMerchant().getId() , OutcomeTransactionDto::setMerchantId)
+                .addMapping(mapper -> mapper.getCategory().getId() , OutcomeTransactionDto::setCategoryId);
+
         return mapper.map(outcomeTransaction , OutcomeTransactionDto.class);
     }
 

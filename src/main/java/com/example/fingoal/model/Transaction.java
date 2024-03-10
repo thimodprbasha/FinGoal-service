@@ -1,6 +1,5 @@
 package com.example.fingoal.model;
 
-import com.example.fingoal.dto.TransactionType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -38,4 +37,8 @@ public class Transaction {
 
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_budget_id" , referencedColumnName = "id")
+    private UserBudget userBudget;
 }

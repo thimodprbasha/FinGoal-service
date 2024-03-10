@@ -1,7 +1,8 @@
 package com.example.fingoal.service.budgetService.impl;
 
 import com.example.fingoal.dto.OutcomeTransactionDto;
-import com.example.fingoal.dto.TransactionType;
+import com.example.fingoal.model.TransactionType;
+import com.example.fingoal.exception.ResourceNotFoundException;
 import com.example.fingoal.mappers.impl.OutcomeMapper;
 import com.example.fingoal.model.*;
 import com.example.fingoal.repository.OutcomeTransactionRepository;
@@ -10,13 +11,13 @@ import com.example.fingoal.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -69,7 +70,13 @@ public class OutcomeTransactionServiceImpl implements TransactionService<Outcome
 
     @Override
     public OutcomeTransaction findTransactionById(Long outcomeTransactionId) {
-        return outcomeTransactionRepository.findById(outcomeTransactionId).orElseThrow(RuntimeException::new);
+        return outcomeTransactionRepository
+                .findById(outcomeTransactionId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                String.format("Could not find a OutcomeTransaction with ID : %d" , outcomeTransactionId )
+                                , HttpStatus.NOT_FOUND)
+                );
     }
 
     @Override

@@ -14,12 +14,12 @@ public interface TransactionService<S , D> {
 
     D findTransactionByIdMapToDto(Long id);
 
-    Page<D> getAllTransactionByCategory(Long categoryId , Pageable pageable);
-
+    default Page<D> getAllTransactionByCategory(Long categoryId , Pageable pageable){
+        return null;
+    }
     default Page<D> getAllTransactionByMerchant(Long merchantId, Pageable pageable) {
         return null;
     }
-
     Page<D> getAllTransactionByAccount(Long accountId , Pageable pageable);
 
     Page<D> getAllTransactionByBudget(Long budgetId , Pageable pageable);

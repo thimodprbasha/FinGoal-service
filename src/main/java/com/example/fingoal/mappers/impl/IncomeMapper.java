@@ -24,8 +24,7 @@ public class IncomeMapper implements Mapper<IncomeTransaction , IncomeTransactio
         this.mapper
                 .typeMap(IncomeTransaction.class , IncomeTransactionDto.class)
                 .addMapping(mapper -> mapper.getUserBudget().getId() , IncomeTransactionDto::setUserBudgetId)
-                .addMapping(mapper -> mapper.getAccount().getId() , IncomeTransactionDto::setAccountId)
-                .addMapping(mapper -> mapper.getCategory().getId() , IncomeTransactionDto::setCategoryId);
+                .addMapping(mapper -> mapper.getAccount().getId() , IncomeTransactionDto::setAccountId);
 
         return mapper.map(incomeTransaction , IncomeTransactionDto.class) ;
     }

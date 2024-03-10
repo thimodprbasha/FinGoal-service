@@ -1,5 +1,6 @@
 package com.example.fingoal.dto;
 
+import com.example.fingoal.model.TransactionType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
@@ -7,7 +8,6 @@ import lombok.experimental.SuperBuilder;
 import lombok.extern.jackson.Jacksonized;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -23,7 +23,7 @@ public class TransactionDto {
 
     private LocalDateTime updatedAt;
 
-    private LocalDate transactionDate;
+    private LocalDateTime transactionDate;
 
     private BigDecimal amount;
 
@@ -33,4 +33,6 @@ public class TransactionDto {
 
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
+
+    private Long userBudgetId;
 }
