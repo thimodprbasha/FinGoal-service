@@ -10,15 +10,8 @@ import com.example.fingoal.model.OutcomeTransaction;
 import com.example.fingoal.model.TransactionCategory;
 import com.example.fingoal.model.UserBudget;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.AbstractConverter;
-import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
-import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor

@@ -51,7 +51,7 @@ public class UserBudget {
     @JsonIgnore
     @OneToMany(
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             mappedBy = "userBudget"
     )
     private List<IncomeTransaction> incomeTransactions;
@@ -59,7 +59,7 @@ public class UserBudget {
     @JsonIgnore
     @OneToMany(
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             mappedBy = "userBudget"
     )
     private List<OutcomeTransaction> outcomeTransactions;
@@ -67,7 +67,7 @@ public class UserBudget {
     @JsonIgnore
     @OneToMany(
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             mappedBy = "userBudget"
     )
     private List<Transfer> transfers;

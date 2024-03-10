@@ -1,0 +1,60 @@
+package com.example.fingoal.service.merchantService.impl;
+
+import com.example.fingoal.dto.MerchantDto;
+import com.example.fingoal.mappers.impl.MerchantMapper;
+import com.example.fingoal.model.Merchant;
+import com.example.fingoal.repository.MerchantRepository;
+import com.example.fingoal.service.merchantService.MerchantService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class MerchantServiceImpl implements MerchantService {
+
+    private final MerchantRepository merchantRepository;
+
+    private final MerchantMapper mapper;
+
+    @Override
+    public MerchantDto createMerchant(MerchantDto merchantDto) {
+        Merchant merchant = mapper.mapFrom(merchantDto);
+        return mapper.mapTo(merchantRepository.save(merchant));
+
+    }
+
+    @Override
+    public MerchantDto updateUserBudget(MerchantDto merchantDt) {
+        return null;
+    }
+
+    @Override
+    public Merchant findMerchantById(Long merchantId) {
+        return merchantRepository.findById(merchantId).orElseThrow(RuntimeException::new);
+    }
+
+    @Override
+    public Page<MerchantDto> getAllMerchant(Pageable pageable) {
+        return merchantRepository.findAll(pageable).map(mapper::mapTo);
+    }
+
+    @Override
+    public void deleteMerchant(Merchant merchant) {
+        merchantRepository.delete(merchant);
+    }
+
+    @Override
+    public void deleteMerchant(Long merchantId) {
+        merchantRepository.deleteById(merchantId);
+    }
+
+    @Override
+    public MerchantDto findMerchantByIdUserMapToDto(Long userId) {
+        return null;
+    }
+}

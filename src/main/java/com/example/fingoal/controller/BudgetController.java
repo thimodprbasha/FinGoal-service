@@ -1,10 +1,15 @@
 package com.example.fingoal.controller;
 
+import com.example.fingoal.dto.TransactionDto;
 import com.example.fingoal.dto.UserBudgetDto;
 import com.example.fingoal.service.budgetService.BudgetService;
 import com.example.fingoal.service.userService.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +42,19 @@ public class BudgetController {
     ) {
         var resp = budgetService.findUserBudgetByUserMapToDto(id);
         return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+
+    @GetMapping("/get-all-transactions/{user-id}")
+    public ResponseEntity<?> getAllTransactions(
+            @Valid
+            @PathVariable(name = "user-id") long id,
+            @RequestParam(name = "pageNo" , defaultValue = "0") Integer pageNo,
+            @RequestParam(name = "pageSize" , defaultValue = "10") Integer pageSize
+    ) {
+        Pageable pageable =  PageRequest.of(pageNo ,pageSize , Sort.by("transactionDate").ascending());
+        var userBudgetId = budgetService.findUserBudgetByUser(id).getId();
+        Page<TransactionDto> response = budgetService.findAllIncomeAndOutcomeTransactions(userBudgetId ,pageable);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/update/{user-id}")

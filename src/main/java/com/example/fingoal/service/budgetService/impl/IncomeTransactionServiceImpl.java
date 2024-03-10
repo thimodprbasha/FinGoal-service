@@ -1,13 +1,12 @@
 package com.example.fingoal.service.budgetService.impl;
 
 import com.example.fingoal.dto.IncomeTransactionDto;
+import com.example.fingoal.dto.TransactionType;
 import com.example.fingoal.mappers.impl.IncomeMapper;
-import com.example.fingoal.model.Account;
-import com.example.fingoal.model.IncomeTransaction;
-import com.example.fingoal.model.TransactionCategory;
-import com.example.fingoal.model.UserBudget;
+import com.example.fingoal.model.*;
 import com.example.fingoal.repository.IncomeTransactionRepository;
 import com.example.fingoal.service.budgetService.TransactionService;
+import com.example.fingoal.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
@@ -27,13 +28,10 @@ public class IncomeTransactionServiceImpl implements TransactionService<IncomeTr
 
     @Override
     @Transactional
-    public IncomeTransactionDto createTransaction(IncomeTransactionDto transactionDto , UserBudget userBudget) {
+    public IncomeTransactionDto createTransaction(IncomeTransactionDto transactionDto , UserBudget userBudget , Merchant merchant) {
 
-        TransactionCategory transactionCategory = userBudget.getTransactionCategories().stream()
-                .filter(element -> element.getId().equals(transactionDto.getCategoryId())).findAny().orElseThrow(RuntimeException::new);
-
-        Account account = userBudget.getUser().getAccounts().stream()
-                .filter(element -> element.getId().equals(transactionDto.getAccountId())).findAny().orElseThrow(RuntimeException::new);
+        TransactionCategory transactionCategory = Utils.GetTransactionCategoryFromBudgetEntity(userBudget.getTransactionCategories().stream() , transactionDto.getCategoryId());
+        Account account = Utils.GetAccountFromBudgetEntity( userBudget.getUser().getAccounts().stream() , transactionDto.getAccountId());
 
         BigDecimal incrementedAccountBalance = account.getBalance().add(transactionDto.getAmount());
         BigDecimal incrementedUserBudgetIncome = userBudget.getIncomeAmount().add(transactionDto.getAmount());
@@ -45,14 +43,12 @@ public class IncomeTransactionServiceImpl implements TransactionService<IncomeTr
         incomeTransaction.setCategory(transactionCategory);
         incomeTransaction.setAccount(account);
         incomeTransaction.setUserBudget(userBudget);
+        incomeTransaction.setTransactionType(TransactionType.INCOME_TRANSACTION);
+        incomeTransaction.setTransactionDate(LocalDateTime.now());
 
         IncomeTransaction saved = incomeTransactionRepository.save(incomeTransaction);
         return mapper.mapTo(saved);
     }
-
-//    private <S> S FindEntity(Stream<S> stream , Class<TransactionCategory> transactionCategoryClass){
-//    }
-
 
     @Override
     public IncomeTransaction findTransactionById(Long incomeTransactionId) {

@@ -41,10 +41,10 @@ public class UserBudgetDto {
 
     private boolean isCategoryFull;
 
-    public List<TransactionCategoryDto> transactionCategories;
-//
-    public List<IncomeTransactionDto>  incomeTransactions;
-//
-    public List<OutcomeTransactionDto>  outcomeTransactions;
+//    public List<TransactionCategoryDto> transactionCategories;
+////
+//    public List<IncomeTransactionDto>  incomeTransactions;
+////
+//    public List<OutcomeTransactionDto>  outcomeTransactions;
 
 }

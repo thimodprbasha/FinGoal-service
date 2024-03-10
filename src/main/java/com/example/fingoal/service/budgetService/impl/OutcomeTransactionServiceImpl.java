@@ -1,15 +1,22 @@
 package com.example.fingoal.service.budgetService.impl;
 
 import com.example.fingoal.dto.OutcomeTransactionDto;
+import com.example.fingoal.dto.TransactionType;
 import com.example.fingoal.mappers.impl.OutcomeMapper;
-import com.example.fingoal.model.OutcomeTransaction;
-import com.example.fingoal.model.UserBudget;
+import com.example.fingoal.model.*;
 import com.example.fingoal.repository.OutcomeTransactionRepository;
 import com.example.fingoal.service.budgetService.TransactionService;
+import com.example.fingoal.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,9 +27,42 @@ public class OutcomeTransactionServiceImpl implements TransactionService<Outcome
     private final OutcomeMapper mapper;
 
     @Override
-    public OutcomeTransactionDto createTransaction(OutcomeTransactionDto outcomeTransactionDto , UserBudget userBudget) {
+    @Transactional
+    public OutcomeTransactionDto createTransaction(OutcomeTransactionDto outcomeTransactionDto , UserBudget userBudget , Merchant merchant) {
+
+        TransactionCategory transactionCategory = Utils.GetTransactionCategoryFromBudgetEntity(userBudget.getTransactionCategories().stream() , outcomeTransactionDto.getCategoryId());
+        Account account = Utils.GetAccountFromBudgetEntity( userBudget.getUser().getAccounts().stream() , outcomeTransactionDto.getAccountId());
+
+        BigDecimal deductedAccountBalance =  account.getBalance().subtract(outcomeTransactionDto.getAmount() , MathContext.DECIMAL64);
+
+        if (deductedAccountBalance.signum() == -1){
+            throw new RuntimeException();
+        }
+
         OutcomeTransaction outcomeTransaction = mapper.mapFrom(outcomeTransactionDto);
+
+        BigDecimal incrementUserBudgetOutcome = userBudget.getIncomeAmount().add(outcomeTransactionDto.getAmount());
+        BigDecimal incrementUserBudgetCurrentAmount = userBudget.getCurrentAmount().add(outcomeTransactionDto.getAmount());
+        BigDecimal currentSavingsUserBudget = userBudget.getBudgetAmount().subtract(incrementUserBudgetCurrentAmount , MathContext.DECIMAL64);
+        BigDecimal incrementedCategoryCurrentAmount = transactionCategory.getCurrentAmount().add(outcomeTransactionDto.getAmount());
+
+        account.setBalance(deductedAccountBalance);
+
+        transactionCategory.setCurrentAmount(incrementedCategoryCurrentAmount);
+
+        userBudget.setCurrentAmount(incrementedCategoryCurrentAmount);
+        userBudget.setOutcomeAmount(incrementUserBudgetOutcome);
+        userBudget.setCurrentSavings(currentSavingsUserBudget);
+
+        outcomeTransaction.setUserBudget(userBudget);
+        outcomeTransaction.setAccount(account);
+        outcomeTransaction.setCategory(transactionCategory);
+        outcomeTransaction.setMerchant(merchant);
+        outcomeTransaction.setTransactionType(TransactionType.OUTCOME_TRANSACTION);
+        outcomeTransaction.setTransactionDate(LocalDateTime.now());
+
         OutcomeTransaction saved = outcomeTransactionRepository.save(outcomeTransaction);
+
         return mapper.mapTo(saved);
     }
 

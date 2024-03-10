@@ -21,12 +21,12 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponseDto> register(@Valid @RequestBody  RegisterRequestDto requestDto ) {
-        return new ResponseEntity(authenticationService.register(requestDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(authenticationService.register(requestDto), HttpStatus.CREATED);
     }
 
     @PostMapping("/sign-in")
     public ResponseEntity<AuthenticationResponseDto> authenticate(@Valid @RequestBody AuthenticationRequestDto request) {
-        return new ResponseEntity(authenticationService.authenticate(request), HttpStatus.OK);
+        return new ResponseEntity<>(authenticationService.authenticate(request), HttpStatus.OK);
     }
 
     @PostMapping("/refresh-token")
