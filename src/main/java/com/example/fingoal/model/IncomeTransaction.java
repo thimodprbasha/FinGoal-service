@@ -18,4 +18,8 @@ public class IncomeTransaction extends  Transaction{
     @JoinColumn(name = "account_id" , referencedColumnName = "id")
     private Account account;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_budget_id" , referencedColumnName = "id")
+    private UserBudget userBudget;
+
 }

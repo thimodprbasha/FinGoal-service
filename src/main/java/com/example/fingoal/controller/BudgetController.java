@@ -51,7 +51,7 @@ public class BudgetController {
             @RequestParam(name = "pageNo" , defaultValue = "0") Integer pageNo,
             @RequestParam(name = "pageSize" , defaultValue = "10") Integer pageSize
     ) {
-        Pageable pageable =  PageRequest.of(pageNo ,pageSize , Sort.by("transactionDate").ascending());
+        Pageable pageable =  PageRequest.of(pageNo ,pageSize);
         var userBudgetId = budgetService.findUserBudgetByUser(id).getId();
         Page<TransactionDto> response = budgetService.findAllIncomeAndOutcomeTransactions(userBudgetId ,pageable);
         return new ResponseEntity<>(response, HttpStatus.OK);
