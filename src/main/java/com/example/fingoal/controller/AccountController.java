@@ -11,13 +11,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/user/account")
-@RequiredArgsConstructor
+@PreAuthorize("hasAuthority('USER')")
 public class AccountController {
     private final UserService userService;
 
@@ -27,9 +31,10 @@ public class AccountController {
     public ResponseEntity<AccountDto> createAccount(
             @Valid
             @PathVariable(name = "user-id") long id,
-            @RequestBody AccountDto accountDto
+            @RequestBody AccountDto accountDto ,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        var user = userService.isUserExist(id);
+        var user = userService.findUser(id);
         var resp = accountService.createAccount(accountDto, user);
         return new ResponseEntity<>(resp, HttpStatus.CREATED);
     }
@@ -38,9 +43,10 @@ public class AccountController {
     public ResponseEntity<AccountDto> updateAccount(
             @Valid
             @PathVariable(name = "user-id") long id,
-            @RequestBody AccountDto accountDto
+            @RequestBody AccountDto accountDto,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        var user = userService.isUserExist(id);
+        var user = userService.findUser(id);
         var resp = accountService.updateAccount(accountDto, user);
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
@@ -49,10 +55,11 @@ public class AccountController {
     public ResponseEntity<Page<AccountDto>> getAllAccounts(
             @Valid
             @PathVariable(name = "user-id") long id,
+            @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
             @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize
     ) {
-        var user = userService.isUserExist(id);
+        var user = userService.findUser(id);
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<AccountDto> accounts = accountService.getAllAccountsByUser(user.getId(), pageable);
         return new ResponseEntity<>(accounts, HttpStatus.OK);

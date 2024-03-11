@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponseDto {
+public class JwtDto {
     @JsonProperty("access_token")
     private String accessToken;
     @JsonProperty("refresh_token")

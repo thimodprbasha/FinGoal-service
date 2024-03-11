@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserBudgetDto {
+public class ResponseUserBudgetDto {
 
     private Long id;
 //    @JsonProperty("user_id")

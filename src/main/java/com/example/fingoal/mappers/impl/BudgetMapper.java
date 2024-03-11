@@ -3,7 +3,7 @@ package com.example.fingoal.mappers.impl;
 import com.example.fingoal.dto.IncomeTransactionDto;
 import com.example.fingoal.dto.OutcomeTransactionDto;
 import com.example.fingoal.dto.TransactionCategoryDto;
-import com.example.fingoal.dto.UserBudgetDto;
+import com.example.fingoal.dto.ResponseUserBudgetDto;
 import com.example.fingoal.mappers.Mapper;
 import com.example.fingoal.model.IncomeTransaction;
 import com.example.fingoal.model.OutcomeTransaction;
@@ -15,12 +15,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class BudgetMapper implements Mapper<UserBudget, UserBudgetDto> {
+public class BudgetMapper implements Mapper<UserBudget, ResponseUserBudgetDto> {
 
     private final ModelMapper mapper;
 
     @Override
-    public UserBudgetDto mapTo(UserBudget userBudget) {
+    public ResponseUserBudgetDto mapTo(UserBudget userBudget) {
         this.mapper
                 .typeMap(TransactionCategory.class, TransactionCategoryDto.class)
                 .addMapping(mapper -> mapper.getUserBudget().getId(), TransactionCategoryDto::setUserBudgetId);
@@ -32,15 +32,15 @@ public class BudgetMapper implements Mapper<UserBudget, UserBudgetDto> {
                 .typeMap(OutcomeTransaction.class, OutcomeTransactionDto.class)
                 .addMapping(mapper -> mapper.getUserBudget().getId(), OutcomeTransactionDto::setUserBudgetId);
 
-        this.mapper.typeMap(UserBudget.class, UserBudgetDto.class)
-                .addMapping(mapper -> mapper.getUser().getId(), UserBudgetDto::setUserId);
+        this.mapper.typeMap(UserBudget.class, ResponseUserBudgetDto.class)
+                .addMapping(mapper -> mapper.getUser().getId(), ResponseUserBudgetDto::setUserId);
 
-        return mapper.map(userBudget, UserBudgetDto.class);
+        return mapper.map(userBudget, ResponseUserBudgetDto.class);
 
     }
 
     @Override
-    public UserBudget mapFrom(UserBudgetDto userBudgetDto) {
-        return mapper.map(userBudgetDto, UserBudget.class);
+    public UserBudget mapFrom(ResponseUserBudgetDto responseUserBudgetDto) {
+        return mapper.map(responseUserBudgetDto, UserBudget.class);
     }
 }

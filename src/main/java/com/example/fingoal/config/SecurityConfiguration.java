@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -15,6 +16,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
@@ -30,8 +32,8 @@ public class SecurityConfiguration {
                         request ->
                                 request
                                         .requestMatchers("/api/v1/auth/**" ,"/api/v1/user/**" ).permitAll()
-//                                        .requestMatchers("/api/v1/admin/**").hasAuthority(Role.ADMIN.name())
-//                                        .requestMatchers("/api/v1/user/**").hasAuthority(Role.USER.name())
+                                        .requestMatchers("/api/v1/admin/**").hasAuthority(Role.ADMIN.name())
+                                        .requestMatchers("/api/v1/user/**").hasAuthority(Role.USER.name())
 
                                         //fixme change the authority in production
 //                                        .requestMatchers("/api/v1/admin/**").permitAll()

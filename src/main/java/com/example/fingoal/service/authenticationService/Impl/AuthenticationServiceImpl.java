@@ -2,7 +2,7 @@ package com.example.fingoal.service.authenticationService.Impl;
 
 import com.example.fingoal.dto.AuthenticationRequestDto;
 import com.example.fingoal.dto.RegisterRequestDto;
-import com.example.fingoal.dto.AuthenticationResponseDto;
+import com.example.fingoal.dto.JwtDto;
 import com.example.fingoal.model.Role;
 import com.example.fingoal.model.User;
 import com.example.fingoal.repository.UserRepository;
@@ -28,7 +28,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public AuthenticationResponseDto register(RegisterRequestDto registerRequestDto){
+    public JwtDto register(RegisterRequestDto registerRequestDto){
         User user = User.builder()
                 .firstName(registerRequestDto.getFirstName())
                 .lastName(registerRequestDto.getLastName())
@@ -44,7 +44,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     }
     @Override
-    public AuthenticationResponseDto authenticate(AuthenticationRequestDto request) {
+    public JwtDto authenticate(AuthenticationRequestDto request) {
         authenticationManager.authenticate( new UsernamePasswordAuthenticationToken(
                 request.getEmail() , request.getPassword()
         ));
@@ -55,14 +55,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public AuthenticationResponseDto refreshToken(String refreshToken) {
+    public JwtDto refreshToken(String refreshToken) {
         String userEmail = jwtService.extractUsername(refreshToken);
         User user = userRepository.findByEmail(userEmail).orElseThrow();
 
         if (jwtService.isTokenValid(refreshToken, user)){
             var accessToken = jwtService.generateToken(user);
 
-            AuthenticationResponseDto jwtAuthResponse = AuthenticationResponseDto.builder()
+            JwtDto jwtAuthResponse = JwtDto.builder()
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
                     .build();
@@ -71,11 +71,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return null;
     }
 
-    private AuthenticationResponseDto generateAuthenticationResponse(UserDetails user){
+    private JwtDto generateAuthenticationResponse(UserDetails user){
         var accessToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
 
-        return AuthenticationResponseDto.builder()
+        return JwtDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();

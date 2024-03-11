@@ -1,16 +1,17 @@
 package com.example.fingoal.service.budgetService;
 
+import com.example.fingoal.dto.RequestUserBudgetDto;
 import com.example.fingoal.dto.TransactionDto;
-import com.example.fingoal.dto.UserBudgetDto;
+import com.example.fingoal.dto.ResponseUserBudgetDto;
 import com.example.fingoal.model.User;
 import com.example.fingoal.model.UserBudget;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface BudgetService {
-    UserBudgetDto createBudget(UserBudgetDto userBudgetDto, User user);
+    ResponseUserBudgetDto createBudget(ResponseUserBudgetDto responseUserBudgetDto, User user);
 
-    UserBudgetDto updateUserBudget(UserBudgetDto userBudgetDto, User user);
+    ResponseUserBudgetDto updateUserBudget(Long budgetId , RequestUserBudgetDto requestUserBudgetDto);
 
     void deleteBudget(UserBudget userBudget);
 
@@ -22,7 +23,7 @@ public interface BudgetService {
 
     UserBudget findUserBudgetByBudget(Long budgetId);
 
-    UserBudgetDto findUserBudgetByUserMapToDto(Long userId);
+    ResponseUserBudgetDto findUserBudgetByUserMapToDto(Long userId);
 
-    UserBudgetDto findUserBudgetByBudgetMapToDto(Long budgetId);
+    ResponseUserBudgetDto findUserBudgetByBudgetMapToDto(Long budgetId);
 }

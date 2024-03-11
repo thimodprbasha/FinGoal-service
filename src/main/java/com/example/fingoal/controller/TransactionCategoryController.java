@@ -1,7 +1,6 @@
 package com.example.fingoal.controller;
 
 import com.example.fingoal.dto.TransactionCategoryDto;
-import com.example.fingoal.dto.UserBudgetDto;
 import com.example.fingoal.model.UserBudget;
 import com.example.fingoal.service.budgetService.BudgetService;
 import com.example.fingoal.service.budgetService.TransactionCategoryService;
@@ -15,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController

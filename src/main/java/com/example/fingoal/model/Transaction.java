@@ -37,4 +37,8 @@ public class Transaction {
 
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_budget_id" , referencedColumnName = "id")
+    private UserBudget userBudget;
 }
