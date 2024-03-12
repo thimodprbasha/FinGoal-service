@@ -3,8 +3,9 @@ package com.example.fingoal.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -18,24 +19,32 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "user_budget")
+@EntityListeners(AuditingEntityListener.class)
 public class UserBudget {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @CreationTimestamp
+    @CreatedDate
+    @Column(
+            nullable = false,
+            updatable = false
+    )
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
+    @LastModifiedDate
+    @Column(insertable = false)
     private LocalDateTime updatedAt;
 
+    @Column(nullable = false)
     private String budgetName;
 
     private BigDecimal currentAmount;
 
     private BigDecimal currentSavings;
 
+    @Column(nullable = false)
     private BigDecimal budgetAmount;
 
     private BigDecimal incomeAmount;
@@ -83,5 +92,4 @@ public class UserBudget {
     @OneToOne(cascade = CascadeType.ALL , fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
-
 }

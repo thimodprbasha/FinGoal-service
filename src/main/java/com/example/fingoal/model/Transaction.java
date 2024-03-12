@@ -3,42 +3,59 @@ package com.example.fingoal.model;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Immutable;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 @Getter
 @Setter
+@Immutable
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
-@Entity
 @Inheritance(strategy = InheritanceType.JOINED)
+@EntityListeners(AuditingEntityListener.class)
+@Entity
 public class Transaction {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @CreationTimestamp
+    @CreatedDate
+    @Column(
+            nullable = false,
+            updatable = false
+    )
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
-    private LocalDateTime updatedAt;
-
+    @Column(nullable = false)
     private LocalDateTime transactionDate;
 
+    @Column(nullable = false)
     private BigDecimal amount;
 
+    @Column(nullable = false)
     private String remarks;
 
     private String attachment;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private TransactionType transactionType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_budget_id" , referencedColumnName = "id")
-    private UserBudget userBudget;
+    @CreatedBy
+    @Column(
+            nullable = false,
+            updatable = false
+    )
+    private Long createdBy;
+
+    @LastModifiedBy
+    @Column(insertable = false)
+    private Long lastModifiedBy;
 }

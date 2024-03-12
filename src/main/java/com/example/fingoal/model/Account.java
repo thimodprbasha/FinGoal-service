@@ -3,8 +3,11 @@ package com.example.fingoal.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -17,24 +20,38 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "accounts")
+@EntityListeners(AuditingEntityListener.class)
 public class Account {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @CreationTimestamp
+    @CreatedDate
+    @Column(
+            nullable = false,
+            updatable = false
+    )
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
+    @LastModifiedDate
+    @Column(insertable = false)
     private LocalDateTime updatedAt;
 
+    @Column(nullable = false)
     private String accountName;
 
+    @Column(nullable = false)
     private String accountType;
 
+    @Column(
+            nullable = false,
+            updatable = false,
+            unique = true
+    )
     private String accountNumber;
 
+    @Column(nullable = false)
     private BigDecimal balance;
 
     @JsonIgnore
@@ -58,5 +75,17 @@ public class Account {
     @JoinColumn(name = "user_id" , referencedColumnName = "id")
     private User user;
 
+    @CreatedBy
+    @Column(
+            nullable = false,
+            updatable = false
+    )
+    private Long createdBy;
+
+    @LastModifiedBy
+    @Column(insertable = false)
+    private Long lastModifiedBy;
+
 
 }
+

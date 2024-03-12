@@ -26,7 +26,7 @@ public class OutcomeTransaction extends Transaction{
     @JoinColumn(name = "merchant_id" , referencedColumnName = "id")
     private Merchant merchant;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_budget_id" , referencedColumnName = "id")
-//    private UserBudget userBudget;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_budget_id" , referencedColumnName = "id")
+    private UserBudget userBudget;
 }

@@ -21,7 +21,7 @@ import java.util.List;
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @CreationTimestamp
@@ -30,20 +30,27 @@ public class User implements UserDetails {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    @Column(nullable = false)
     private String firstName;
 
+    @Column(nullable = false)
     private String lastName;
 
     private String telephone;
 
-    @Column(unique = true)
+    @Column(
+            unique = true,
+            nullable = false
+    )
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
     private String profilePicture;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
     private boolean isEnabled;
