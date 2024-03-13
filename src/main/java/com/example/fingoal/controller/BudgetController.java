@@ -1,8 +1,8 @@
 package com.example.fingoal.controller;
 
 import com.example.fingoal.dto.RequestUserBudgetDto;
-import com.example.fingoal.dto.TransactionDto;
 import com.example.fingoal.dto.ResponseUserBudgetDto;
+import com.example.fingoal.dto.TransactionDto;
 import com.example.fingoal.model.User;
 import com.example.fingoal.service.budgetService.BudgetService;
 import com.example.fingoal.service.userService.UserService;
@@ -30,46 +30,51 @@ public class BudgetController {
     private final BudgetService budgetService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createBudget(
+    public ResponseEntity<ResponseUserBudgetDto> createBudget(
             @Valid
             @RequestBody ResponseUserBudgetDto budget,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
-        User user = userService.findUser(userDetails.getUsername());
+        User connectedUser = (User) userDetails;
+        User user = userService.findUser(connectedUser.getId());
         ResponseUserBudgetDto response = budgetService.createBudget(budget , user);
         return new ResponseEntity<>(response , HttpStatus.CREATED);
     }
 
-    @GetMapping("/get/{user-id}")
-    public ResponseEntity<?> getBudget(
+    @GetMapping("/get")
+    @PreAuthorize("@securityAuthorizeHandler.ifBudgetPresent(authentication)")
+    public ResponseEntity<ResponseUserBudgetDto> getBudget(
             @Valid
-            @PathVariable(name = "user-id") long id
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        ResponseUserBudgetDto response = budgetService.findUserBudgetByUserMapToDto(id);
+        ResponseUserBudgetDto response = budgetService.findUserBudgetByUserMapToDto(((User) userDetails).getId());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/get-all-transactions/{user-id}")
-    public ResponseEntity<?> getAllTransactions(
+    @GetMapping("/get-all-transactions")
+    @PreAuthorize("@securityAuthorizeHandler.ifBudgetPresent(authentication)")
+    public ResponseEntity<Page<TransactionDto>> getAllTransactions(
             @Valid
-            @PathVariable(name = "user-id") long id,
+            @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam(name = "pageNo" , defaultValue = "0") Integer pageNo,
             @RequestParam(name = "pageSize" , defaultValue = "10") Integer pageSize
     ) {
         Pageable pageable =  PageRequest.of(pageNo ,pageSize);
-        Long userBudgetId = budgetService.findUserBudgetByUser(id).getId();
-        Page<TransactionDto> response = budgetService.findAllIncomeAndOutcomeTransactions(userBudgetId ,pageable);
+        User conectedUser = (User) userDetails;
+        Page<TransactionDto> response = budgetService.findAllIncomeAndOutcomeTransactions(conectedUser.getUserBudget().getId() ,pageable);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PutMapping("/update/{user-id}")
-    public ResponseEntity<?> updateBudget(
+    @PutMapping("/update")
+    @PreAuthorize("@securityAuthorizeHandler.ifBudgetPresent(authentication)")
+    public ResponseEntity<ResponseUserBudgetDto> updateBudget(
             @Valid
-            @PathVariable(name = "user-id") long userId,
+            @AuthenticationPrincipal UserDetails userDetails,
             @RequestBody RequestUserBudgetDto requestUserBudgetDto
     ) {
+        User conectedUser = (User) userDetails;
         if (requestUserBudgetDto.hasAtLeastOneValue()){
-            ResponseUserBudgetDto response = budgetService.updateUserBudget(userId , requestUserBudgetDto);
+            ResponseUserBudgetDto response = budgetService.updateUserBudget(conectedUser.getId() , requestUserBudgetDto);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
         return ResponseEntity.badRequest().build();
@@ -81,6 +86,6 @@ public class BudgetController {
             @PathVariable(name = "user-id") long id
     ) {
         budgetService.deleteBudget(id);
-        return ResponseEntity.ok().body("ok");
+        return ResponseEntity.ok().build();
     }
 }

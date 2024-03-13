@@ -26,4 +26,9 @@ public interface BudgetService {
     ResponseUserBudgetDto findUserBudgetByUserMapToDto(Long userId);
 
     ResponseUserBudgetDto findUserBudgetByBudgetMapToDto(Long budgetId);
+
+    boolean isUserBudgetExistsOnUser(UserBudget userBudget);
+
+    void isUserBudgetExistsOnConnectedUser(UserBudget userBudget);
+
 }

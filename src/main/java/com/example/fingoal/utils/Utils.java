@@ -1,10 +1,8 @@
 package com.example.fingoal.utils;
 
-import com.example.fingoal.model.Account;
-import com.example.fingoal.model.Merchant;
-import com.example.fingoal.model.TransactionCategory;
-import com.example.fingoal.model.UserBudget;
+import com.example.fingoal.model.*;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -47,6 +45,10 @@ public class Utils {
         responseBody.put("error", messages);
 
         return responseBody;
+    }
+
+    public User DowncastFromUserDetailsToUser(UserDetails userDetails){
+        return (User) userDetails;
     }
 
 }

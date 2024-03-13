@@ -74,7 +74,7 @@ public class BudgetServiceImpl implements BudgetService {
                 .findByUserId(userId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
-                                String.format("Could not find a Budget with UserID : %d" , userId )
+                                String.format("Could not find a Budget with UserID : %d  or Budget not have been created" , userId )
                                 , HttpStatus.NOT_FOUND)
                 );
 
@@ -110,9 +110,30 @@ public class BudgetServiceImpl implements BudgetService {
                 .findById(budgetId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
-                                String.format("Could not find a Budget with ID : %d" , budgetId )
-                                , HttpStatus.NOT_FOUND)
+                                String.format("Could not find a Budget with ID : %d  or Budget not have been created" , budgetId )
+                                , HttpStatus.FORBIDDEN)
                 );
 
     }
+    @Override
+    public boolean isUserBudgetExistsOnUser(UserBudget userBudget){
+       if (Optional.ofNullable(userBudget).isPresent()){
+           return true;
+       }else {
+           throw  new ResourceNotFoundException(
+                   "Budget not have been created"
+                   , HttpStatus.FORBIDDEN);
+       }
+    }
+
+    @Override
+    public void isUserBudgetExistsOnConnectedUser(UserBudget userBudget){
+        Optional.ofNullable(userBudget)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Budget not have been created"
+                                , HttpStatus.FORBIDDEN)
+                );
+    }
+
 }
