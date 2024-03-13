@@ -48,6 +48,8 @@ public class IncomeTransactionServiceImpl implements TransactionService<IncomeTr
         return mapper.mapTo(saved);
     }
 
+
+
     @Override
     public IncomeTransaction findTransactionById(Long incomeTransactionId) {
         return incomeTransactionRepository

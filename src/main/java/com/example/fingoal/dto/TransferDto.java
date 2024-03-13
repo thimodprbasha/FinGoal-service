@@ -1,5 +1,6 @@
 package com.example.fingoal.dto;
 
+import com.example.fingoal.model.Account;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,9 +14,13 @@ import lombok.extern.jackson.Jacksonized;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
-public class IncomeTransactionDto extends TransactionDto {
+public class TransferDto extends TransactionDto{
 
-    private Long accountId;
+    private Long fromAccount;
+
+    private Long toAccount;
 
     private Long userBudgetId;
+
+
 }

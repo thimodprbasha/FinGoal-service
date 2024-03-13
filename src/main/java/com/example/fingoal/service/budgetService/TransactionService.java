@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 public interface TransactionService<S , D> {
-    D createTransaction(D dto , UserBudget userBudget , Merchant merchant);
+     D createTransaction(D dto , UserBudget userBudget , Merchant merchant);
 
     S findTransactionById(Long id);
 

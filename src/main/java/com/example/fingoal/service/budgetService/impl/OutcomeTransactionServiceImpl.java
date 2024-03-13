@@ -29,12 +29,26 @@ public class OutcomeTransactionServiceImpl implements TransactionService<Outcome
 
     @Override
     @Transactional
-    public OutcomeTransactionDto createTransaction(OutcomeTransactionDto outcomeTransactionDto , UserBudget userBudget , Merchant merchant) {
+    public OutcomeTransactionDto createTransaction(
+            OutcomeTransactionDto outcomeTransactionDto ,
+            UserBudget userBudget ,
+            Merchant merchant
+    ) {
 
-        TransactionCategory transactionCategory = Utils.GetTransactionCategoryFromBudgetEntity(userBudget.getTransactionCategories().stream() , outcomeTransactionDto.getCategoryId());
-        Account account = Utils.GetAccountFromBudgetEntity( userBudget.getUser().getAccounts().stream() , outcomeTransactionDto.getAccountId());
+        TransactionCategory transactionCategory = Utils
+                .GetTransactionCategoryFromBudgetEntity(
+                        userBudget.getTransactionCategories().stream() ,
+                        outcomeTransactionDto.getCategoryId()
+                );
+        Account account = Utils
+                .GetAccountFromBudgetEntity(
+                        userBudget.getUser().getAccounts().stream() ,
+                        outcomeTransactionDto.getAccountId()
+                );
 
-        BigDecimal deductedAccountBalance =  account.getBalance().subtract(outcomeTransactionDto.getAmount() , MathContext.DECIMAL64);
+        BigDecimal deductedAccountBalance =  account
+                .getBalance()
+                .subtract(outcomeTransactionDto.getAmount() , MathContext.DECIMAL64);
 
         if (deductedAccountBalance.signum() == -1){
             throw new RuntimeException();
@@ -42,10 +56,14 @@ public class OutcomeTransactionServiceImpl implements TransactionService<Outcome
 
         OutcomeTransaction outcomeTransaction = mapper.mapFrom(outcomeTransactionDto);
 
-        BigDecimal incrementUserBudgetOutcome = userBudget.getIncomeAmount().add(outcomeTransactionDto.getAmount());
-        BigDecimal incrementUserBudgetCurrentAmount = userBudget.getCurrentAmount().add(outcomeTransactionDto.getAmount());
-        BigDecimal currentSavingsUserBudget = userBudget.getBudgetAmount().subtract(incrementUserBudgetCurrentAmount , MathContext.DECIMAL64);
-        BigDecimal incrementedCategoryCurrentAmount = transactionCategory.getCurrentAmount().add(outcomeTransactionDto.getAmount());
+        BigDecimal incrementUserBudgetOutcome = userBudget.getIncomeAmount()
+                .add(outcomeTransactionDto.getAmount());
+        BigDecimal incrementUserBudgetCurrentAmount = userBudget.getCurrentAmount()
+                .add(outcomeTransactionDto.getAmount());
+        BigDecimal currentSavingsUserBudget = userBudget.getBudgetAmount()
+                .subtract(incrementUserBudgetCurrentAmount , MathContext.DECIMAL64);
+        BigDecimal incrementedCategoryCurrentAmount = transactionCategory
+                .getCurrentAmount().add(outcomeTransactionDto.getAmount());
 
         account.setBalance(deductedAccountBalance);
 
@@ -54,6 +72,7 @@ public class OutcomeTransactionServiceImpl implements TransactionService<Outcome
         userBudget.setCurrentAmount(incrementedCategoryCurrentAmount);
         userBudget.setOutcomeAmount(incrementUserBudgetOutcome);
         userBudget.setCurrentSavings(currentSavingsUserBudget);
+        userBudget.setCategoryFull(deductedAccountBalance.signum() == -1);
 
         outcomeTransaction.setUserBudget(userBudget);
         outcomeTransaction.setAccount(account);

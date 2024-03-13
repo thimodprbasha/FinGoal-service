@@ -18,4 +18,6 @@ public class OutcomeTransactionDto extends TransactionDto {
     private Long categoryId;
 
     private Long merchantId;
+
+    private Long userBudgetId;
 }

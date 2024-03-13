@@ -34,5 +34,4 @@ public class TransactionDto {
     @Enumerated(EnumType.STRING)
     private TransactionType transactionType;
 
-    private Long userBudgetId;
 }
