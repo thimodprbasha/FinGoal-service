@@ -1,5 +1,7 @@
-package com.example.fingoal.model;
+package com.example.fingoal.model.budget;
 
+import com.example.fingoal.model.users.Role;
+import com.example.fingoal.model.users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,6 +13,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -89,7 +92,16 @@ public class UserBudget {
     )
     private List<TransactionCategory> transactionCategories;
 
-    @OneToOne(cascade = CascadeType.ALL , fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
+    @PreUpdate
+    @PrePersist
+    public void onUpdate() {
+        if (this.user.isRoleEquals(Role.ADMIN) || this.user.isRoleEquals(Role.MERCHANT)
+        ) {
+            throw new IllegalStateException("Only users with role 'USER' are allowed to Persist or Update");
+        }
+    }
 }

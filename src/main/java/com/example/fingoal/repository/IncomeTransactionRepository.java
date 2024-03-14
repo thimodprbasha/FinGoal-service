@@ -1,6 +1,6 @@
 package com.example.fingoal.repository;
 
-import com.example.fingoal.model.IncomeTransaction;
+import com.example.fingoal.model.budget.IncomeTransaction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

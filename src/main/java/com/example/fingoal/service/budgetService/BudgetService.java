@@ -3,8 +3,8 @@ package com.example.fingoal.service.budgetService;
 import com.example.fingoal.dto.RequestUserBudgetDto;
 import com.example.fingoal.dto.TransactionDto;
 import com.example.fingoal.dto.ResponseUserBudgetDto;
-import com.example.fingoal.model.User;
-import com.example.fingoal.model.UserBudget;
+import com.example.fingoal.model.users.User;
+import com.example.fingoal.model.budget.UserBudget;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

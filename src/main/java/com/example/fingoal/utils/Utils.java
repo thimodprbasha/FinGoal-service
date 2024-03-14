@@ -1,6 +1,9 @@
 package com.example.fingoal.utils;
 
-import com.example.fingoal.model.*;
+import com.example.fingoal.model.budget.TransactionCategory;
+import com.example.fingoal.model.customer.Account;
+import com.example.fingoal.model.merchant.Merchant;
+import com.example.fingoal.model.users.User;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;

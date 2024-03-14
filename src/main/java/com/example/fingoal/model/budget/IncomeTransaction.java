@@ -1,5 +1,6 @@
-package com.example.fingoal.model;
+package com.example.fingoal.model.budget;
 
+import com.example.fingoal.model.customer.Account;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -12,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 @Entity
 @Table(name = "income_transactions")
-public class IncomeTransaction extends  Transaction{
+public class IncomeTransaction extends Transaction {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id" , referencedColumnName = "id")

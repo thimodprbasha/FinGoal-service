@@ -1,10 +1,8 @@
 package com.example.fingoal.mappers.impl;
 
-import com.example.fingoal.dto.IncomeTransactionDto;
 import com.example.fingoal.dto.OutcomeTransactionDto;
 import com.example.fingoal.mappers.Mapper;
-import com.example.fingoal.model.IncomeTransaction;
-import com.example.fingoal.model.OutcomeTransaction;
+import com.example.fingoal.model.budget.OutcomeTransaction;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

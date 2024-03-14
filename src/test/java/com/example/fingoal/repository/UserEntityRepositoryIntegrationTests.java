@@ -1,7 +1,7 @@
 package com.example.fingoal.repository;
 
-import com.example.fingoal.model.Role;
-import com.example.fingoal.model.User;
+import com.example.fingoal.model.users.Role;
+import com.example.fingoal.model.users.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.junit.jupiter.api.Test;

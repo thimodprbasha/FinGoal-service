@@ -1,17 +1,15 @@
-package com.example.fingoal.model;
+package com.example.fingoal.model.merchant;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,9 +19,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "transaction_categories")
+@Table(name = "promotions")
 @EntityListeners(AuditingEntityListener.class)
-public class TransactionCategory {
+public class Promotion {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -40,26 +38,21 @@ public class TransactionCategory {
     private LocalDateTime updatedAt;
 
     @Column(nullable = false)
-    private String categoryName;
-
-    private String icon;
+    private String promotionName;
 
     @Column(nullable = false)
-    private BigDecimal setAmount;
+    private LocalDate startDate;
 
-    private BigDecimal currentAmount;
+    @Column(nullable = false)
+    private LocalDate endDate;
 
     @JsonIgnore
-    @OneToMany(
+    @ManyToMany(
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "category"
+            fetch = FetchType.EAGER,
+            mappedBy = "promotions"
     )
-    private List<OutcomeTransaction> outcomeTransactions;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_budget_id" , referencedColumnName = "id")
-    private UserBudget userBudget;
+    private List<Merchant> merchants;
 
     @CreatedBy
     @Column(

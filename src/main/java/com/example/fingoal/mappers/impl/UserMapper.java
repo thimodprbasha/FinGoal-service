@@ -2,11 +2,10 @@ package com.example.fingoal.mappers.impl;
 
 import com.example.fingoal.dto.UserDto;
 import com.example.fingoal.mappers.Mapper;
-import com.example.fingoal.model.User;
+import com.example.fingoal.model.users.User;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor

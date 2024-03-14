@@ -1,8 +1,8 @@
 package com.example.fingoal.controller;
 
 import com.example.fingoal.dto.TransactionCategoryDto;
-import com.example.fingoal.model.User;
-import com.example.fingoal.model.UserBudget;
+import com.example.fingoal.model.users.User;
+import com.example.fingoal.model.budget.UserBudget;
 import com.example.fingoal.service.budgetService.BudgetService;
 import com.example.fingoal.service.budgetService.TransactionCategoryService;
 import io.micrometer.common.util.StringUtils;

@@ -1,6 +1,5 @@
 package com.example.fingoal.dto;
 
-import com.example.fingoal.model.Account;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

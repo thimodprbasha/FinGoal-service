@@ -1,5 +1,7 @@
-package com.example.fingoal.model;
+package com.example.fingoal.model.budget;
 
+import com.example.fingoal.model.budget.OutcomeTransaction;
+import com.example.fingoal.model.budget.UserBudget;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,10 +21,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "accounts")
+@Table(name = "transaction_categories")
 @EntityListeners(AuditingEntityListener.class)
-public class Account {
-
+public class TransactionCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -39,41 +40,26 @@ public class Account {
     private LocalDateTime updatedAt;
 
     @Column(nullable = false)
-    private String accountName;
+    private String categoryName;
+
+    private String icon;
 
     @Column(nullable = false)
-    private String accountType;
+    private BigDecimal setAmount;
 
-    @Column(
-            nullable = false,
-            updatable = false,
-            unique = true
-    )
-    private String accountNumber;
-
-    @Column(nullable = false)
-    private BigDecimal balance;
+    private BigDecimal currentAmount;
 
     @JsonIgnore
     @OneToMany(
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
-            mappedBy = "account"
-    )
-    private List<IncomeTransaction> incomeTransactions;
-
-    @JsonIgnore
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "account"
+            mappedBy = "category"
     )
     private List<OutcomeTransaction> outcomeTransactions;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id" , referencedColumnName = "id")
-    private User user;
+    @JoinColumn(name = "user_budget_id" , referencedColumnName = "id")
+    private UserBudget userBudget;
 
     @CreatedBy
     @Column(
@@ -85,7 +71,4 @@ public class Account {
     @LastModifiedBy
     @Column(insertable = false)
     private Long lastModifiedBy;
-
-
 }
-

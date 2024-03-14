@@ -1,10 +1,14 @@
 package com.example.fingoal.service.budgetService.impl;
 
 import com.example.fingoal.dto.OutcomeTransactionDto;
-import com.example.fingoal.model.TransactionType;
+import com.example.fingoal.model.budget.TransactionType;
 import com.example.fingoal.exception.ResourceNotFoundException;
 import com.example.fingoal.mappers.impl.OutcomeMapper;
-import com.example.fingoal.model.*;
+import com.example.fingoal.model.budget.OutcomeTransaction;
+import com.example.fingoal.model.budget.TransactionCategory;
+import com.example.fingoal.model.budget.UserBudget;
+import com.example.fingoal.model.customer.Account;
+import com.example.fingoal.model.merchant.Merchant;
 import com.example.fingoal.repository.OutcomeTransactionRepository;
 import com.example.fingoal.service.budgetService.TransactionService;
 import com.example.fingoal.utils.Utils;
@@ -21,7 +25,7 @@ import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class OutcomeTransactionServiceImpl implements TransactionService<OutcomeTransaction , OutcomeTransactionDto> {
+public class OutcomeTransactionServiceImpl implements TransactionService<OutcomeTransaction, OutcomeTransactionDto> {
 
     private final OutcomeTransactionRepository outcomeTransactionRepository;
 

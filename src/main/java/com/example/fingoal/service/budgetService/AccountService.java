@@ -1,8 +1,8 @@
 package com.example.fingoal.service.budgetService;
 
 import com.example.fingoal.dto.AccountDto;
-import com.example.fingoal.model.Account;
-import com.example.fingoal.model.User;
+import com.example.fingoal.model.customer.Account;
+import com.example.fingoal.model.users.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

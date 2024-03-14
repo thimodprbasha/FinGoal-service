@@ -3,7 +3,8 @@ package com.example.fingoal.controller;
 import com.example.fingoal.dto.AuthenticationRequestDto;
 import com.example.fingoal.dto.JwtDto;
 import com.example.fingoal.dto.RegisterRequestDto;
-import com.example.fingoal.model.User;
+import com.example.fingoal.model.users.Role;
+import com.example.fingoal.model.users.User;
 import com.example.fingoal.service.authenticationService.AuthenticationService;
 import com.example.fingoal.service.userService.UserService;
 import com.example.fingoal.utils.Utils;
@@ -31,17 +32,29 @@ public class AuthenticationController {
     private final UserService userService;
 
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(
+    @PostMapping("/user/register")
+    public ResponseEntity<?> registerUser(
             @Valid
             @RequestBody  RegisterRequestDto requestDto
     ) {
+        return createUser(requestDto , Role.USER);
+    }
+
+    @PostMapping("/merchant/register")
+    public ResponseEntity<?> registerUserMerchant(
+            @Valid
+            @RequestBody  RegisterRequestDto requestDto
+    ) {
+        return createUser(requestDto , Role.MERCHANT);
+    }
+
+    private ResponseEntity<?> createUser(RegisterRequestDto requestDto , Role role){
         if (userService.isUserAlreadyExist(requestDto.getEmail())){
             return new ResponseEntity<>(
                     Utils.ResponseBody(HttpStatus.FORBIDDEN , "User Already Exists"),
                     HttpStatus.FORBIDDEN);
         }
-        return new ResponseEntity<>(authenticationService.register(requestDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(authenticationService.register(requestDto , role),HttpStatus.CREATED);
     }
 
     @PostMapping("/sign-in")

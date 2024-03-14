@@ -1,6 +1,6 @@
 package com.example.fingoal.service.userService.impl;
 
-import com.example.fingoal.model.User;
+import com.example.fingoal.model.users.User;
 import com.example.fingoal.repository.UserRepository;
 import com.example.fingoal.service.userService.UserService;
 import lombok.RequiredArgsConstructor;

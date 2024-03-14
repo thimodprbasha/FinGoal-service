@@ -1,13 +1,12 @@
 package com.example.fingoal;
 
-import com.example.fingoal.model.Role;
-import com.example.fingoal.model.User;
+import com.example.fingoal.model.users.Role;
+import com.example.fingoal.model.users.User;
 import com.example.fingoal.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.crypto.password.PasswordEncoder;
 

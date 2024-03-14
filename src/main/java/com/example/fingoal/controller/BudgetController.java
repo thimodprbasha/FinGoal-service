@@ -3,7 +3,7 @@ package com.example.fingoal.controller;
 import com.example.fingoal.dto.RequestUserBudgetDto;
 import com.example.fingoal.dto.ResponseUserBudgetDto;
 import com.example.fingoal.dto.TransactionDto;
-import com.example.fingoal.model.User;
+import com.example.fingoal.model.users.User;
 import com.example.fingoal.service.budgetService.BudgetService;
 import com.example.fingoal.service.userService.UserService;
 import jakarta.validation.Valid;

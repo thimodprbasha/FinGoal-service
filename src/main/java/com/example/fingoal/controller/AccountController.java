@@ -1,7 +1,7 @@
 package com.example.fingoal.controller;
 
 import com.example.fingoal.dto.AccountDto;
-import com.example.fingoal.model.User;
+import com.example.fingoal.model.users.User;
 import com.example.fingoal.service.budgetService.AccountService;
 import com.example.fingoal.service.userService.UserService;
 import io.micrometer.common.util.StringUtils;

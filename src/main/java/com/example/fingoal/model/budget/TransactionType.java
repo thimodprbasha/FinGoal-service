@@ -1,4 +1,4 @@
-package com.example.fingoal.model;
+package com.example.fingoal.model.budget;
 
 public enum TransactionType {
     INCOME_TRANSACTION,

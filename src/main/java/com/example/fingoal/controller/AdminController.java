@@ -1,6 +1,6 @@
 package com.example.fingoal.controller;
 
-import com.example.fingoal.model.Role;
+import com.example.fingoal.model.users.Role;
 import com.example.fingoal.service.userService.AdminService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,17 +24,45 @@ public class AdminController {
 
     @GetMapping("/get-users")
     public ResponseEntity<?> register(
-            @Valid @RequestParam(name = "ROLE")  String param ,
+            @Valid @RequestParam(name = "ROLE")  String roleParam,
             @RequestParam(name = "pageNo" , defaultValue = "0") Integer pageNo,
             @RequestParam(name = "pageSize" , defaultValue = "10") Integer pageSize
     ) {
-        final String role = param.toUpperCase();
-        Pageable pageable =  PageRequest.of(pageNo ,pageSize);
-        if (role.equals(Role.ADMIN.name())){
-            return new ResponseEntity<>(adminService.getAllUsersByRole(Role.ADMIN , pageable) , HttpStatus.OK);
-        } else if (role.equals(Role.USER.name())) {
-            return new ResponseEntity<>(adminService.getAllUsersByRole(Role.USER , pageable) , HttpStatus.OK);
+        final Role role;
+        try{
+            role = Role.valueOf(roleParam.toUpperCase());
+        }catch (IllegalArgumentException ignored){
+            return ResponseEntity.badRequest().body("Invalid Role!");
         }
-        return ResponseEntity.badRequest().body("Invalid Role!");
+
+        Pageable pageable =  PageRequest.of(pageNo ,pageSize);
+        switch (role){
+            case USER -> {
+                return new ResponseEntity<>(
+                        adminService.getAllUsersByRole(Role.USER , pageable) ,
+                        HttpStatus.OK
+                );
+            }
+            case ADMIN -> {
+                return new ResponseEntity<>(
+                        adminService.getAllUsersByRole(Role.ADMIN , pageable) ,
+                        HttpStatus.OK
+                );
+            }
+            case MERCHANT ->{
+                return new ResponseEntity<>(
+                        adminService.getAllUsersByRole(Role.MERCHANT , pageable) ,
+                        HttpStatus.OK)
+                        ;
+            }
+            default -> {
+                return new ResponseEntity<>(
+                        adminService.getAllUsers(pageable) ,
+                        HttpStatus.OK)
+                        ;
+            }
+
+        }
+
     }
 }

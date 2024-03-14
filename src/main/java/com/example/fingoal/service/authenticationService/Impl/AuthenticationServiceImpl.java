@@ -3,8 +3,8 @@ package com.example.fingoal.service.authenticationService.Impl;
 import com.example.fingoal.dto.AuthenticationRequestDto;
 import com.example.fingoal.dto.RegisterRequestDto;
 import com.example.fingoal.dto.JwtDto;
-import com.example.fingoal.model.Role;
-import com.example.fingoal.model.User;
+import com.example.fingoal.model.users.Role;
+import com.example.fingoal.model.users.User;
 import com.example.fingoal.repository.UserRepository;
 import com.example.fingoal.service.authenticationService.AuthenticationService;
 import com.example.fingoal.service.jwtService.JwtService;
@@ -28,14 +28,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public JwtDto register(RegisterRequestDto registerRequestDto){
+    public JwtDto register(RegisterRequestDto registerRequestDto , Role role){
         User user = User.builder()
                 .firstName(registerRequestDto.getFirstName())
                 .lastName(registerRequestDto.getLastName())
                 .telephone(registerRequestDto.getTelephone())
                 .email(registerRequestDto.getEmail())
                 .password(passwordEncoder.encode(registerRequestDto.getPassword()))
-                .role(Role.USER)
+                .role(role)
                 .profilePicture(registerRequestDto.getProfilePicture())
                 .build();
 

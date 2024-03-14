@@ -2,14 +2,14 @@ package com.example.fingoal.mappers.impl;
 
 import com.example.fingoal.dto.MerchantDto;
 import com.example.fingoal.mappers.Mapper;
-import com.example.fingoal.model.Merchant;
+import com.example.fingoal.model.merchant.Merchant;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class MerchantMapper implements Mapper<Merchant , MerchantDto> {
+public class MerchantMapper implements Mapper<Merchant, MerchantDto> {
 
     private final ModelMapper modelMapper;
     @Override
@@ -17,7 +17,7 @@ public class MerchantMapper implements Mapper<Merchant , MerchantDto> {
 //        this.modelMapper
 //                .typeMap(MerchantDto.class , Merchant.class)
 //                .addMapping()
-        return modelMapper.map(merchant , MerchantDto.class);
+        return modelMapper.map(merchant, MerchantDto.class);
     }
 
     @Override

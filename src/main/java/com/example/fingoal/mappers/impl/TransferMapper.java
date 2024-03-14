@@ -2,7 +2,7 @@ package com.example.fingoal.mappers.impl;
 
 import com.example.fingoal.dto.TransferDto;
 import com.example.fingoal.mappers.Mapper;
-import com.example.fingoal.model.Transfer;
+import com.example.fingoal.model.budget.Transfer;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

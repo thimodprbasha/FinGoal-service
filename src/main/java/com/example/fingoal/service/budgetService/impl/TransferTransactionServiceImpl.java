@@ -3,7 +3,11 @@ package com.example.fingoal.service.budgetService.impl;
 import com.example.fingoal.dto.TransferDto;
 import com.example.fingoal.exception.ResourceNotFoundException;
 import com.example.fingoal.mappers.impl.TransferMapper;
-import com.example.fingoal.model.*;
+import com.example.fingoal.model.budget.TransactionType;
+import com.example.fingoal.model.budget.Transfer;
+import com.example.fingoal.model.budget.UserBudget;
+import com.example.fingoal.model.customer.Account;
+import com.example.fingoal.model.merchant.Merchant;
 import com.example.fingoal.repository.TransferRepository;
 import com.example.fingoal.service.budgetService.TransactionService;
 import com.example.fingoal.utils.Utils;
@@ -17,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 @Service
 @RequiredArgsConstructor
-public class TransferTransactionServiceImpl implements TransactionService<Transfer , TransferDto> {
+public class TransferTransactionServiceImpl implements TransactionService<Transfer, TransferDto> {
 
     private final TransferMapper mapper;
 

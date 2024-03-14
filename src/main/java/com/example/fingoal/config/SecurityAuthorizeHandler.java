@@ -1,7 +1,7 @@
 package com.example.fingoal.config;
 
 import com.example.fingoal.exception.ResourceNotFoundException;
-import com.example.fingoal.model.User;
+import com.example.fingoal.model.users.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;

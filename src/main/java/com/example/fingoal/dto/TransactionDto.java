@@ -1,6 +1,6 @@
 package com.example.fingoal.dto;
 
-import com.example.fingoal.model.TransactionType;
+import com.example.fingoal.model.budget.TransactionType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;

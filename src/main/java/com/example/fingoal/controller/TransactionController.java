@@ -4,7 +4,9 @@ import com.example.fingoal.dto.IncomeTransactionDto;
 import com.example.fingoal.dto.OutcomeTransactionDto;
 import com.example.fingoal.dto.TransactionDto;
 import com.example.fingoal.dto.TransferDto;
-import com.example.fingoal.model.*;
+import com.example.fingoal.model.budget.UserBudget;
+import com.example.fingoal.model.merchant.Merchant;
+import com.example.fingoal.model.users.User;
 import com.example.fingoal.service.budgetService.BudgetService;
 import com.example.fingoal.service.budgetService.TransactionService;
 import com.example.fingoal.service.budgetService.impl.IncomeTransactionServiceImpl;
@@ -99,7 +101,7 @@ public class TransactionController {
     ) {
         UserBudget userBudget = budgetService.findUserBudgetByUser(((User)userDetails).getId());
         Merchant merchant = merchantService.findMerchantById(outcomeTransactionDto.getMerchantId());
-        OutcomeTransactionDto response = outcomeTransactionService.createTransaction(outcomeTransactionDto , userBudget , merchant );
+        OutcomeTransactionDto response = outcomeTransactionService.createTransaction(outcomeTransactionDto , userBudget , merchant);
         return new ResponseEntity<>(response , HttpStatus.CREATED);
     }
 

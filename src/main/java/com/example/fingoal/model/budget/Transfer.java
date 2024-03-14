@@ -1,13 +1,9 @@
-package com.example.fingoal.model;
+package com.example.fingoal.model.budget;
 
+import com.example.fingoal.model.customer.Account;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter

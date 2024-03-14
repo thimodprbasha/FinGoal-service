@@ -3,8 +3,8 @@ package com.example.fingoal.service.budgetService.impl;
 import com.example.fingoal.dto.TransactionCategoryDto;
 import com.example.fingoal.exception.ResourceNotFoundException;
 import com.example.fingoal.mappers.impl.TransactionCategoryMapper;
-import com.example.fingoal.model.TransactionCategory;
-import com.example.fingoal.model.UserBudget;
+import com.example.fingoal.model.budget.TransactionCategory;
+import com.example.fingoal.model.budget.UserBudget;
 import com.example.fingoal.repository.TransactionCategoryRepository;
 import com.example.fingoal.service.budgetService.TransactionCategoryService;
 import lombok.RequiredArgsConstructor;
@@ -15,9 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
