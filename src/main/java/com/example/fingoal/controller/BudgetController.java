@@ -80,12 +80,14 @@ public class BudgetController {
         return ResponseEntity.badRequest().build();
     }
 
-    @DeleteMapping("/delete/{user-id}")
+    @DeleteMapping("/delete")
+    @PreAuthorize("@securityAuthorizeHandler.ifBudgetPresent(authentication)")
     public ResponseEntity<?> deleteBudget(
             @Valid
-            @PathVariable(name = "user-id") long id
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        budgetService.deleteBudget(id);
+        User conectedUser = (User) userDetails;
+        budgetService.deleteBudget(conectedUser.getUserBudget().getId());
         return ResponseEntity.ok().build();
     }
 }

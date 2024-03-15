@@ -2,6 +2,7 @@ package com.example.fingoal.dto;
 
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,9 +20,9 @@ public class PromotionDto {
 
     private String promotionName;
 
-    private LocalDateTime startDate;
+    private LocalDate startDate;
 
-    private LocalDateTime endDate;
+    private LocalDate endDate;
 
-    private List<MerchantDto> merchants;
+    private Long merchantId;
 }

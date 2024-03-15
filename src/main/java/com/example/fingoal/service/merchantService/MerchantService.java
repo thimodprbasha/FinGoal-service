@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 public interface MerchantService {
     MerchantDto createMerchant(MerchantDto merchantDto , User user);
 
-    MerchantDto updateUserBudget(MerchantDto merchantDt);
+    MerchantDto updateMerchant(Long merchantId , MerchantDto merchantDt);
 
     Merchant findMerchantById(Long merchantId);
 
@@ -19,5 +19,7 @@ public interface MerchantService {
 
     void deleteMerchant(Long merchantId);
 
-    MerchantDto findMerchantByIdUserMapToDto(Long userId);
+    MerchantDto findMerchantByIdMapToDto(Long merchantId);
+
+    Page<MerchantDto> findAllMerchantByUser(Long userId , Pageable pageable);
 }

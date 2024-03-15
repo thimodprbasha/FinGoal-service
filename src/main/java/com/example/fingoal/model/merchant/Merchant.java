@@ -50,7 +50,6 @@ public class Merchant {
 
     private String location;
 
-    @JsonIgnore
     @OneToMany(
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
@@ -58,21 +57,10 @@ public class Merchant {
     )
     private List<OutcomeTransaction> outcomeTransactions;
 
-    @JsonIgnore
-    @ManyToMany(
-            fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL
-    )
-    @JoinTable(
-            name = "merchant_promotions",
-            joinColumns = @JoinColumn(
-                    name = "merchant_id",
-                    referencedColumnName = "id"
-            ),
-            inverseJoinColumns = @JoinColumn(
-                    name = "promotion_id",
-                    referencedColumnName = "id"
-            )
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            mappedBy = "merchant"
     )
     private List<Promotion> promotions;
 

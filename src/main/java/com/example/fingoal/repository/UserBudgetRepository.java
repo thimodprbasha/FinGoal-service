@@ -24,6 +24,9 @@ public interface UserBudgetRepository extends JpaRepository<UserBudget, Long> {
             "WHERE ub.id = :userBudgetId " +
             "ORDER BY t.transactionDate DESC"
     )
-    Page<Transaction> findIncomeAndOutcomeTransactionsByUserBudgetId(@Param("userBudgetId") Long userBudgetId, Pageable pageable);
+    Page<Transaction> findIncomeAndOutcomeTransactionsByUserBudgetId(
+            @Param("userBudgetId") Long userBudgetId,
+            Pageable pageable
+    );
 
 }

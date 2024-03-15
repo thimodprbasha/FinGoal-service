@@ -66,7 +66,6 @@ public class Account {
     )
     private List<IncomeTransaction> incomeTransactions;
 
-    @JsonIgnore
     @OneToMany(
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
@@ -74,7 +73,6 @@ public class Account {
     )
     private List<OutcomeTransaction> outcomeTransactions;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id" , referencedColumnName = "id")
     private User user;

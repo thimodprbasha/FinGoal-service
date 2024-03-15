@@ -23,46 +23,34 @@ public class AdminController {
     private final AdminService adminService;
 
     @GetMapping("/get-users")
-    public ResponseEntity<?> register(
-            @Valid @RequestParam(name = "ROLE")  String roleParam,
+    public ResponseEntity<?> getUsers(
+            @Valid @RequestParam(name = "ROLE", defaultValue = "ALL")  String param ,
             @RequestParam(name = "pageNo" , defaultValue = "0") Integer pageNo,
             @RequestParam(name = "pageSize" , defaultValue = "10") Integer pageSize
     ) {
-        final Role role;
-        try{
-            role = Role.valueOf(roleParam.toUpperCase());
-        }catch (IllegalArgumentException ignored){
-            return ResponseEntity.badRequest().body("Invalid Role!");
-        }
-
+        final String role = param.toUpperCase();
         Pageable pageable =  PageRequest.of(pageNo ,pageSize);
-        switch (role){
-            case USER -> {
-                return new ResponseEntity<>(
-                        adminService.getAllUsersByRole(Role.USER , pageable) ,
-                        HttpStatus.OK
-                );
-            }
-            case ADMIN -> {
-                return new ResponseEntity<>(
-                        adminService.getAllUsersByRole(Role.ADMIN , pageable) ,
-                        HttpStatus.OK
-                );
-            }
-            case MERCHANT ->{
-                return new ResponseEntity<>(
-                        adminService.getAllUsersByRole(Role.MERCHANT , pageable) ,
-                        HttpStatus.OK)
-                        ;
-            }
-            default -> {
-                return new ResponseEntity<>(
-                        adminService.getAllUsers(pageable) ,
-                        HttpStatus.OK)
-                        ;
-            }
-
+        if (role.equals(Role.ADMIN.name())){
+            return new ResponseEntity<>(
+                    adminService.getAllUsersByRole(Role.ADMIN , pageable) ,
+                    HttpStatus.OK
+            );
+        } else if (role.equals(Role.USER.name())) {
+            return new ResponseEntity<>(
+                    adminService.getAllUsersByRole(Role.USER , pageable) ,
+                    HttpStatus.OK
+            );
+        } else if (role.equals(Role.MERCHANT.name())){
+            return new ResponseEntity<>(
+                    adminService.getAllUsersByRole(Role.MERCHANT , pageable) ,
+                    HttpStatus.OK
+            );
+        }else if (role.equals("ALL")){
+            return new ResponseEntity<>(
+                    adminService.getAllUsers(pageable) ,
+                    HttpStatus.OK
+            );
         }
-
+        return ResponseEntity.badRequest().body("Invalid Role!");
     }
 }

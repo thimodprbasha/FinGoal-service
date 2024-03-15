@@ -47,12 +47,8 @@ public class Promotion {
     private LocalDate endDate;
 
     @JsonIgnore
-    @ManyToMany(
-            cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER,
-            mappedBy = "promotions"
-    )
-    private List<Merchant> merchants;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Merchant merchant;
 
     @CreatedBy
     @Column(
