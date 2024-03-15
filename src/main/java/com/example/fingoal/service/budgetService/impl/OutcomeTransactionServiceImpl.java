@@ -1,35 +1,105 @@
 package com.example.fingoal.service.budgetService.impl;
 
 import com.example.fingoal.dto.OutcomeTransactionDto;
+import com.example.fingoal.model.budget.TransactionType;
+import com.example.fingoal.exception.ResourceNotFoundException;
 import com.example.fingoal.mappers.impl.OutcomeMapper;
-import com.example.fingoal.model.OutcomeTransaction;
-import com.example.fingoal.model.UserBudget;
+import com.example.fingoal.model.budget.OutcomeTransaction;
+import com.example.fingoal.model.budget.TransactionCategory;
+import com.example.fingoal.model.budget.UserBudget;
+import com.example.fingoal.model.customer.Account;
+import com.example.fingoal.model.merchant.Merchant;
 import com.example.fingoal.repository.OutcomeTransactionRepository;
 import com.example.fingoal.service.budgetService.TransactionService;
+import com.example.fingoal.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class OutcomeTransactionServiceImpl implements TransactionService<OutcomeTransaction , OutcomeTransactionDto> {
+public class OutcomeTransactionServiceImpl implements TransactionService<OutcomeTransaction, OutcomeTransactionDto> {
 
     private final OutcomeTransactionRepository outcomeTransactionRepository;
 
     private final OutcomeMapper mapper;
 
     @Override
-    public OutcomeTransactionDto createTransaction(OutcomeTransactionDto outcomeTransactionDto , UserBudget userBudget) {
+    @Transactional
+    public OutcomeTransactionDto createTransaction(
+            OutcomeTransactionDto outcomeTransactionDto ,
+            UserBudget userBudget ,
+            Merchant merchant
+    ) {
+
+        TransactionCategory transactionCategory = Utils
+                .GetTransactionCategoryFromBudgetEntity(
+                        userBudget.getTransactionCategories().stream() ,
+                        outcomeTransactionDto.getCategoryId()
+                );
+        Account account = Utils
+                .GetAccountFromBudgetEntity(
+                        userBudget.getUser().getAccounts().stream() ,
+                        outcomeTransactionDto.getAccountId()
+                );
+
+        BigDecimal deductedAccountBalance =  account
+                .getBalance()
+                .subtract(outcomeTransactionDto.getAmount() , MathContext.DECIMAL64);
+
+        if (deductedAccountBalance.signum() == -1){
+            throw new RuntimeException();
+        }
+
         OutcomeTransaction outcomeTransaction = mapper.mapFrom(outcomeTransactionDto);
+
+        BigDecimal incrementUserBudgetOutcome = userBudget.getIncomeAmount()
+                .add(outcomeTransactionDto.getAmount());
+        BigDecimal incrementUserBudgetCurrentAmount = userBudget.getCurrentAmount()
+                .add(outcomeTransactionDto.getAmount());
+        BigDecimal currentSavingsUserBudget = userBudget.getBudgetAmount()
+                .subtract(incrementUserBudgetCurrentAmount , MathContext.DECIMAL64);
+        BigDecimal incrementedCategoryCurrentAmount = transactionCategory
+                .getCurrentAmount().add(outcomeTransactionDto.getAmount());
+
+        account.setBalance(deductedAccountBalance);
+
+        transactionCategory.setCurrentAmount(incrementedCategoryCurrentAmount);
+
+        userBudget.setCurrentAmount(incrementedCategoryCurrentAmount);
+        userBudget.setOutcomeAmount(incrementUserBudgetOutcome);
+        userBudget.setCurrentSavings(currentSavingsUserBudget);
+        userBudget.setCategoryFull(deductedAccountBalance.signum() == -1);
+
+        outcomeTransaction.setUserBudget(userBudget);
+        outcomeTransaction.setAccount(account);
+        outcomeTransaction.setCategory(transactionCategory);
+        outcomeTransaction.setMerchant(merchant);
+        outcomeTransaction.setTransactionType(TransactionType.OUTCOME_TRANSACTION);
+        outcomeTransaction.setTransactionDate(LocalDateTime.now());
+
         OutcomeTransaction saved = outcomeTransactionRepository.save(outcomeTransaction);
+
         return mapper.mapTo(saved);
     }
 
 
     @Override
     public OutcomeTransaction findTransactionById(Long outcomeTransactionId) {
-        return outcomeTransactionRepository.findById(outcomeTransactionId).orElseThrow(RuntimeException::new);
+        return outcomeTransactionRepository
+                .findById(outcomeTransactionId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                String.format("Could not find a OutcomeTransaction with ID : %d" , outcomeTransactionId )
+                                , HttpStatus.NOT_FOUND)
+                );
     }
 
     @Override

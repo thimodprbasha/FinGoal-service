@@ -1,12 +1,8 @@
 package com.example.fingoal.dto;
 
-import com.example.fingoal.model.Account;
-import com.example.fingoal.model.Role;
+import com.example.fingoal.model.users.Role;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;

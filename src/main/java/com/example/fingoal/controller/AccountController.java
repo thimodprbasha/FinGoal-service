@@ -1,6 +1,7 @@
 package com.example.fingoal.controller;
 
 import com.example.fingoal.dto.AccountDto;
+import com.example.fingoal.model.users.User;
 import com.example.fingoal.service.budgetService.AccountService;
 import com.example.fingoal.service.userService.UserService;
 import io.micrometer.common.util.StringUtils;
@@ -11,50 +12,53 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/user/account")
-@RequiredArgsConstructor
+@PreAuthorize("hasAuthority('USER')")
 public class AccountController {
     private final UserService userService;
 
     private final AccountService accountService;
 
-    @PostMapping("/create/{user-id}")
+    @PostMapping("/create")
     public ResponseEntity<AccountDto> createAccount(
             @Valid
-            @PathVariable(name = "user-id") long id,
-            @RequestBody AccountDto accountDto
+            @RequestBody AccountDto accountDto ,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        var user = userService.isUserExist(id);
+        User user = userService.findUser(((User)userDetails).getId());
         var resp = accountService.createAccount(accountDto, user);
         return new ResponseEntity<>(resp, HttpStatus.CREATED);
     }
 
-    @PatchMapping("/update/{user-id}")
+    @PatchMapping("/update")
     public ResponseEntity<AccountDto> updateAccount(
             @Valid
-            @PathVariable(name = "user-id") long id,
-            @RequestBody AccountDto accountDto
+            @RequestBody AccountDto accountDto,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        var user = userService.isUserExist(id);
-        var resp = accountService.updateAccount(accountDto, user);
+        User user = userService.findUser(((User)userDetails).getId());
+        AccountDto resp = accountService.updateAccount(accountDto, user);
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 
-    @GetMapping("/get-all/{user-id}")
+    @GetMapping("/get-all")
     public ResponseEntity<Page<AccountDto>> getAllAccounts(
             @Valid
-            @PathVariable(name = "user-id") long id,
+            @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
             @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize
     ) {
-        var user = userService.isUserExist(id);
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        Page<AccountDto> accounts = accountService.getAllAccountsByUser(user.getId(), pageable);
+        Page<AccountDto> accounts = accountService.getAllAccountsByUser(((User)userDetails).getId(), pageable);
         return new ResponseEntity<>(accounts, HttpStatus.OK);
     }
 

@@ -2,7 +2,7 @@ package com.example.fingoal.mappers.impl;
 
 import com.example.fingoal.dto.TransactionCategoryDto;
 import com.example.fingoal.mappers.Mapper;
-import com.example.fingoal.model.TransactionCategory;
+import com.example.fingoal.model.budget.TransactionCategory;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

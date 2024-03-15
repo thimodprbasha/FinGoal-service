@@ -1,15 +1,19 @@
-package com.example.fingoal.model;
+package com.example.fingoal.model.budget;
 
+import com.example.fingoal.model.users.Role;
+import com.example.fingoal.model.users.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -18,24 +22,32 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "user_budget")
+@EntityListeners(AuditingEntityListener.class)
 public class UserBudget {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @CreationTimestamp
+    @CreatedDate
+    @Column(
+            nullable = false,
+            updatable = false
+    )
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
+    @LastModifiedDate
+    @Column(insertable = false)
     private LocalDateTime updatedAt;
 
+    @Column(nullable = false)
     private String budgetName;
 
     private BigDecimal currentAmount;
 
     private BigDecimal currentSavings;
 
+    @Column(nullable = false)
     private BigDecimal budgetAmount;
 
     private BigDecimal incomeAmount;
@@ -51,7 +63,7 @@ public class UserBudget {
     @JsonIgnore
     @OneToMany(
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             mappedBy = "userBudget"
     )
     private List<IncomeTransaction> incomeTransactions;
@@ -59,7 +71,7 @@ public class UserBudget {
     @JsonIgnore
     @OneToMany(
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             mappedBy = "userBudget"
     )
     private List<OutcomeTransaction> outcomeTransactions;
@@ -67,7 +79,7 @@ public class UserBudget {
     @JsonIgnore
     @OneToMany(
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             mappedBy = "userBudget"
     )
     private List<Transfer> transfers;
@@ -80,8 +92,16 @@ public class UserBudget {
     )
     private List<TransactionCategory> transactionCategories;
 
-    @OneToOne(cascade = CascadeType.ALL , fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
+    @PreUpdate
+    @PrePersist
+    public void onUpdate() {
+        if (this.user.isRoleEquals(Role.ADMIN) || this.user.isRoleEquals(Role.MERCHANT)
+        ) {
+            throw new IllegalStateException("Only users with role 'USER' are allowed to Persist or Update");
+        }
+    }
 }

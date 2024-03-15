@@ -1,9 +1,12 @@
-package com.example.fingoal.model;
+package com.example.fingoal.model.users;
 
+import com.example.fingoal.model.customer.Account;
+import com.example.fingoal.model.budget.UserBudget;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -21,7 +25,7 @@ import java.util.List;
 @Table(name = "users")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @CreationTimestamp
@@ -36,21 +40,24 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String lastName;
 
-    @Column(nullable = false)
     private String telephone;
 
-    @Column(nullable = false, unique = true)
+    @Column(
+            unique = true,
+            nullable = false
+    )
     private String email;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
     private String profilePicture;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    private boolean isEnabled;
 
     @OneToOne(
             fetch = FetchType.EAGER,
@@ -65,6 +72,10 @@ public class User implements UserDetails {
             mappedBy = "user"
     )
     private List<Account> accounts;
+
+    public boolean isRoleEquals(Role role){
+        return this.role.equals(role);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -94,5 +105,9 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public boolean isNotEnabled(){
+        return false;
     }
 }

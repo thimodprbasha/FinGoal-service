@@ -1,6 +1,7 @@
 package com.example.fingoal.dto;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransactionCategoryDto {
+public class TransactionCategoryDto{
 
     private Long id;
 

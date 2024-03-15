@@ -1,36 +1,23 @@
 package com.example.fingoal.dto;
 
-import com.example.fingoal.model.Merchant;
-import lombok.*;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import lombok.extern.jackson.Jacksonized;
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
+@Jacksonized
 @NoArgsConstructor
-public class OutcomeTransactionDto {
-    private Long id;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
-    private LocalDate transactionDate;
-
-    private BigDecimal amount;
-
-    private String remarks;
-
-    private String attachment;
-
+@AllArgsConstructor
+@SuperBuilder(toBuilder = true)
+public class OutcomeTransactionDto extends TransactionDto {
     private Long accountId;
 
     private Long categoryId;
 
-    private Long userBudgetId;
-
     private Long merchantId;
+
+    private Long userBudgetId;
 }

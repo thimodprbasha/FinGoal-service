@@ -1,19 +1,18 @@
 package com.example.fingoal.dto;
 
-import com.example.fingoal.model.UserBudget;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
+
 //TODO add json property name later
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserBudgetDto {
+public class ResponseUserBudgetDto {
 
     private Long id;
 //    @JsonProperty("user_id")
@@ -41,10 +40,6 @@ public class UserBudgetDto {
 
     private boolean isCategoryFull;
 
-    public List<TransactionCategoryDto> transactionCategories;
-//
-    public List<IncomeTransactionDto>  incomeTransactions;
-//
-    public List<OutcomeTransactionDto>  outcomeTransactions;
+    private boolean isBudgetExceeded;
 
 }

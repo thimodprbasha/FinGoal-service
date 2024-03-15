@@ -1,17 +1,16 @@
 package com.example.fingoal.service.userService;
 
-import com.example.fingoal.model.User;
+import com.example.fingoal.model.users.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
-import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
     UserDetailsService userDetailsService();
 
-    User isUserExist(String email);
+    User findUser(String email);
 
-    User isUserExist(Long id);
+    Boolean isUserAlreadyExist(String email);
+
+    User findUser(Long id);
 
 
 }

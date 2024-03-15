@@ -2,7 +2,7 @@ package com.example.fingoal.service.userService.impl;
 
 import com.example.fingoal.dto.UserDto;
 import com.example.fingoal.mappers.impl.UserMapper;
-import com.example.fingoal.model.Role;
+import com.example.fingoal.model.users.Role;
 import com.example.fingoal.repository.UserRepository;
 import com.example.fingoal.service.userService.AdminService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +22,11 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Page<UserDto> getAllUsersByRole(Role role , Pageable pageable) {
         return userRepository.findAllByRole(role , pageable).map(mapper::mapTo);
+    }
+
+    @Override
+    public Page<UserDto> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable).map(mapper::mapTo);
     }
 }
 

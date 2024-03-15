@@ -1,14 +1,14 @@
 package com.example.fingoal.service.authenticationService;
 
 import com.example.fingoal.dto.AuthenticationRequestDto;
-import com.example.fingoal.dto.AuthenticationResponseDto;
+import com.example.fingoal.dto.JwtDto;
 import com.example.fingoal.dto.RegisterRequestDto;
-import com.example.fingoal.model.User;
+import com.example.fingoal.model.users.Role;
 
 public interface AuthenticationService {
-    AuthenticationResponseDto register(RegisterRequestDto registerRequestDto);
+    JwtDto register(RegisterRequestDto registerRequestDto , Role role);
 
-    AuthenticationResponseDto authenticate(AuthenticationRequestDto request);
+    JwtDto authenticate(AuthenticationRequestDto request);
 
-    AuthenticationResponseDto refreshToken(String refreshToken);
+    JwtDto refreshToken(String refreshToken);
 }

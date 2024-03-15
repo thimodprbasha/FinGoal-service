@@ -1,25 +1,29 @@
 package com.example.fingoal.service.budgetService.impl;
 
 import com.example.fingoal.dto.IncomeTransactionDto;
+import com.example.fingoal.model.budget.TransactionType;
+import com.example.fingoal.exception.ResourceNotFoundException;
 import com.example.fingoal.mappers.impl.IncomeMapper;
-import com.example.fingoal.model.Account;
-import com.example.fingoal.model.IncomeTransaction;
-import com.example.fingoal.model.TransactionCategory;
-import com.example.fingoal.model.UserBudget;
+import com.example.fingoal.model.budget.IncomeTransaction;
+import com.example.fingoal.model.budget.UserBudget;
+import com.example.fingoal.model.customer.Account;
+import com.example.fingoal.model.merchant.Merchant;
 import com.example.fingoal.repository.IncomeTransactionRepository;
 import com.example.fingoal.service.budgetService.TransactionService;
+import com.example.fingoal.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.stream.Stream;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
-public class IncomeTransactionServiceImpl implements TransactionService<IncomeTransaction , IncomeTransactionDto> {
+public class IncomeTransactionServiceImpl implements TransactionService<IncomeTransaction, IncomeTransactionDto> {
 
     private final IncomeTransactionRepository incomeTransactionRepository;
 
@@ -27,13 +31,9 @@ public class IncomeTransactionServiceImpl implements TransactionService<IncomeTr
 
     @Override
     @Transactional
-    public IncomeTransactionDto createTransaction(IncomeTransactionDto transactionDto , UserBudget userBudget) {
+    public IncomeTransactionDto createTransaction(IncomeTransactionDto transactionDto , UserBudget userBudget , Merchant merchant) {
 
-        TransactionCategory transactionCategory = userBudget.getTransactionCategories().stream()
-                .filter(element -> element.getId().equals(transactionDto.getCategoryId())).findAny().orElseThrow(RuntimeException::new);
-
-        Account account = userBudget.getUser().getAccounts().stream()
-                .filter(element -> element.getId().equals(transactionDto.getAccountId())).findAny().orElseThrow(RuntimeException::new);
+        Account account = Utils.GetAccountFromBudgetEntity( userBudget.getUser().getAccounts().stream() , transactionDto.getAccountId());
 
         BigDecimal incrementedAccountBalance = account.getBalance().add(transactionDto.getAmount());
         BigDecimal incrementedUserBudgetIncome = userBudget.getIncomeAmount().add(transactionDto.getAmount());
@@ -42,31 +42,31 @@ public class IncomeTransactionServiceImpl implements TransactionService<IncomeTr
         userBudget.setIncomeAmount(incrementedUserBudgetIncome);
 
         IncomeTransaction incomeTransaction = mapper.mapFrom(transactionDto);
-        incomeTransaction.setCategory(transactionCategory);
         incomeTransaction.setAccount(account);
         incomeTransaction.setUserBudget(userBudget);
+        incomeTransaction.setTransactionType(TransactionType.INCOME_TRANSACTION);
+        incomeTransaction.setTransactionDate(LocalDateTime.now());
 
         IncomeTransaction saved = incomeTransactionRepository.save(incomeTransaction);
         return mapper.mapTo(saved);
     }
 
-//    private <S> S FindEntity(Stream<S> stream , Class<TransactionCategory> transactionCategoryClass){
-//    }
 
 
     @Override
     public IncomeTransaction findTransactionById(Long incomeTransactionId) {
-        return incomeTransactionRepository.findById(incomeTransactionId).orElseThrow(RuntimeException::new);
+        return incomeTransactionRepository
+                .findById(incomeTransactionId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                String.format("Could not find a IncomeTransaction with ID : %d" , incomeTransactionId )
+                                , HttpStatus.NOT_FOUND)
+                );
     }
 
     @Override
     public IncomeTransactionDto findTransactionByIdMapToDto(Long incomeTransactionId) {
         return mapper.mapTo(this.findTransactionById(incomeTransactionId));
-    }
-
-    @Override
-    public Page<IncomeTransactionDto> getAllTransactionByCategory(Long categoryId, Pageable pageable) {
-        return incomeTransactionRepository.findAllByCategoryId(categoryId , pageable).map(mapper::mapTo);
     }
 
     @Override

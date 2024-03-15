@@ -1,20 +1,26 @@
 package com.example.fingoal.service.budgetService.impl;
 
-import com.example.fingoal.dto.UserBudgetDto;
-import com.example.fingoal.mappers.Mapper;
+import com.example.fingoal.dto.RequestUserBudgetDto;
+import com.example.fingoal.dto.TransactionDto;
+import com.example.fingoal.dto.ResponseUserBudgetDto;
+import com.example.fingoal.exception.ResourceNotFoundException;
 import com.example.fingoal.mappers.impl.BudgetMapper;
 import com.example.fingoal.mappers.impl.IncomeMapper;
 import com.example.fingoal.mappers.impl.OutcomeMapper;
-import com.example.fingoal.mappers.impl.TransactionCategoryMapper;
-import com.example.fingoal.model.User;
-import com.example.fingoal.model.UserBudget;
+import com.example.fingoal.model.budget.IncomeTransaction;
+import com.example.fingoal.model.budget.OutcomeTransaction;
+import com.example.fingoal.model.users.User;
+import com.example.fingoal.model.budget.UserBudget;
 import com.example.fingoal.repository.UserBudgetRepository;
 import com.example.fingoal.service.budgetService.BudgetService;
-import com.example.fingoal.service.budgetService.TransactionCategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -25,30 +31,30 @@ public class BudgetServiceImpl implements BudgetService {
 
     private final BudgetMapper mapper;
 
-//    private final TransactionCategoryMapper transactionCategoryMapper;
-//
-//    private final IncomeMapper incomeMapper;
-//
-//    private final OutcomeMapper outcomeMapper;
+    private final IncomeMapper incomeMapper;
 
-
-
+    private final OutcomeMapper outcomeMapper;
 
     @Override
-    public UserBudgetDto createBudget(UserBudgetDto userBudgetDto, User user) {
-        UserBudget userBudget = mapper.mapFrom(userBudgetDto);
+    public ResponseUserBudgetDto createBudget(ResponseUserBudgetDto responseUserBudgetDto, User user) {
+        UserBudget userBudget = mapper.mapFrom(responseUserBudgetDto);
         userBudget.setUser(user);
-        Optional.ofNullable(userBudget.getTransactionCategories()).ifPresent(list -> list.forEach(transactionCategory -> transactionCategory.setUserBudget(userBudget)));
         UserBudget saved = userBudgetRepository.save(userBudget);
         return mapper.mapTo(saved);
     }
     @Override
-    public UserBudgetDto updateUserBudget(UserBudgetDto userBudgetDto, User user){
-//        userBudget.map(
-//                budget -> {
-//                    Optional.ofNullable(budgetDto.budgetName).ifPresent(budget::setBudgetName);
-//                }
-//        )
+    @Transactional
+    public ResponseUserBudgetDto updateUserBudget(Long budgetId , RequestUserBudgetDto requestUserBudgetDto){
+        UserBudget userBudget = this.findUserBudgetByBudget(budgetId);
+        Optional.ofNullable(requestUserBudgetDto.getBudgetName()).ifPresent(userBudget::setBudgetName);
+        Optional.ofNullable(requestUserBudgetDto.getBudgetAmount()).ifPresent(userBudget::setBudgetAmount);
+        Optional.ofNullable(requestUserBudgetDto.getStartDate()).ifPresent(date -> {
+           if (LocalDate.parse(date.toString()).isBefore(LocalDate.now())){
+               //TODO fix this custom exception
+               throw new IllegalArgumentException("Date cant be past");
+            }
+           userBudget.setStartDate(userBudget.getStartDate());
+        });
         return null;
     }
 
@@ -64,43 +70,70 @@ public class BudgetServiceImpl implements BudgetService {
 
     @Override
     public UserBudget findUserBudgetByUser(Long userId){
-        return userBudgetRepository.findByUserId(userId).orElseThrow(RuntimeException::new);
+        return userBudgetRepository
+                .findByUserId(userId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                String.format("Could not find a Budget with UserID : %d  or Budget not have been created" , userId )
+                                , HttpStatus.NOT_FOUND)
+                );
 
     }
 
     @Override
-    public UserBudgetDto findUserBudgetByUserMapToDto(Long userId) {
+    public Page<TransactionDto> findAllIncomeAndOutcomeTransactions(Long budgetId , Pageable pageable) {
+        return userBudgetRepository
+                .findIncomeAndOutcomeTransactionsByUserBudgetId(budgetId , pageable)
+                .map(transaction -> {
+                    if (transaction instanceof IncomeTransaction){
+                        return incomeMapper.mapTo((IncomeTransaction) transaction);
+                    } else if (transaction instanceof OutcomeTransaction) {
+                        return outcomeMapper.mapTo((OutcomeTransaction) transaction);
+                    }
+                    return null;
+        });
+    }
+
+    @Override
+    public ResponseUserBudgetDto findUserBudgetByUserMapToDto(Long userId) {
         return mapper.mapTo(this.findUserBudgetByUser(userId));
     }
 
     @Override
-    public UserBudgetDto findUserBudgetByBudgetMapToDto(Long budgetId) {
+    public ResponseUserBudgetDto findUserBudgetByBudgetMapToDto(Long budgetId) {
         return mapper.mapTo(this.findUserBudgetByBudget(budgetId));
     }
 
     @Override
     public UserBudget findUserBudgetByBudget(Long budgetId){
-        return userBudgetRepository.findById(budgetId).orElseThrow(RuntimeException::new);
+        return userBudgetRepository
+                .findById(budgetId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                String.format("Could not find a Budget with ID : %d  or Budget not have been created" , budgetId )
+                                , HttpStatus.FORBIDDEN)
+                );
 
     }
+    @Override
+    public boolean isUserBudgetExistsOnUser(UserBudget userBudget){
+       if (Optional.ofNullable(userBudget).isPresent()){
+           return true;
+       }else {
+           throw  new ResourceNotFoundException(
+                   "Budget not have been created"
+                   , HttpStatus.FORBIDDEN);
+       }
+    }
 
-//    private UserBudgetDto deepMapper(UserBudget userBudget){
-//        UserBudgetDto userBudgetDto = mapper.mapTo(userBudget);
-//
-//        Optional.ofNullable(userBudget.getIncomeTransactions())
-//                .ifPresent(element -> userBudgetDto.setIncomeTransactions(Convertor(element ,incomeMapper)));
-//        Optional.ofNullable(userBudget.getOutcomeTransactions())
-//                .ifPresent(element -> userBudgetDto.setOutcomeTransactions(Convertor(element ,outcomeMapper)));
-//        Optional.ofNullable(userBudget.getTransactionCategories())
-//                .ifPresent(element -> userBudgetDto.setTransactionCategories(Convertor(element ,transactionCategoryMapper)));
-//
-//        return  userBudgetDto;
-//
-//
-//    }
+    @Override
+    public void isUserBudgetExistsOnConnectedUser(UserBudget userBudget){
+        Optional.ofNullable(userBudget)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Budget not have been created"
+                                , HttpStatus.FORBIDDEN)
+                );
+    }
 
-//    private <E , D> List<D> Convertor(List<E> list , Mapper<E, D> mapper){
-//        return list.stream().map(mapper::mapTo).toList();
-//
-//    }
 }

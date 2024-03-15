@@ -1,21 +1,20 @@
 package com.example.fingoal.service.budgetService.impl;
 
 import com.example.fingoal.dto.TransactionCategoryDto;
+import com.example.fingoal.exception.ResourceNotFoundException;
 import com.example.fingoal.mappers.impl.TransactionCategoryMapper;
-import com.example.fingoal.model.TransactionCategory;
-import com.example.fingoal.model.UserBudget;
+import com.example.fingoal.model.budget.TransactionCategory;
+import com.example.fingoal.model.budget.UserBudget;
 import com.example.fingoal.repository.TransactionCategoryRepository;
 import com.example.fingoal.service.budgetService.TransactionCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -57,7 +56,13 @@ public class TransactionCategoryServiceImpl implements TransactionCategoryServic
 
     @Override
     public TransactionCategory findByCategoryName(Long budgetId, String categoryName) {
-        return transactionCategoryRepository.findByUserBudgetIdAndCategoryName(budgetId, categoryName).orElseThrow(RuntimeException::new);
+        return transactionCategoryRepository
+                .findByUserBudgetIdAndCategoryName(budgetId, categoryName)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                String.format("Could not find a Category with ID : %d and CategoryName : %S" , budgetId , categoryName )
+                                , HttpStatus.NOT_FOUND)
+                );
     }
 
     @Override
@@ -72,7 +77,13 @@ public class TransactionCategoryServiceImpl implements TransactionCategoryServic
 
     @Override
     public TransactionCategory findByCategoryId(Long categoryId) {
-        return transactionCategoryRepository.findById(categoryId).orElseThrow(RuntimeException::new);
+        return transactionCategoryRepository
+                .findById(categoryId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                String.format("Could not find a Category with ID : %d" , categoryId )
+                                , HttpStatus.NOT_FOUND)
+                );
     }
 
     @Override

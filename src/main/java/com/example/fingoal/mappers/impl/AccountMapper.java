@@ -2,12 +2,10 @@ package com.example.fingoal.mappers.impl;
 
 import com.example.fingoal.dto.AccountDto;
 import com.example.fingoal.mappers.Mapper;
-import com.example.fingoal.model.Account;
+import com.example.fingoal.model.customer.Account;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-
-import javax.xml.transform.Source;
 
 @Component
 @RequiredArgsConstructor
